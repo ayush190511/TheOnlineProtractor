@@ -32,7 +32,7 @@ import { AdContainer } from '../components/AdContainer';
         <span class="text-2xl">✅</span>
         <div>
           <h4 class="font-bold">Message Sent Successfully!</h4>
-          <p class="text-xs mt-0.5">Thank you for reaching out. Your response has been recorded into our Google Sheet.</p>
+          <p class="text-xs mt-0.5">Your message was submitted and recorded into the Google Sheet.</p>
         </div>
       </div>
 
@@ -40,7 +40,7 @@ import { AdContainer } from '../components/AdContainer';
         <span class="text-2xl">⚠️</span>
         <div>
           <h4 class="font-bold">Submission Notice</h4>
-          <p class="text-xs mt-0.5" id="error-message">Unable to submit to Google Sheet. Please check your network connection and try again.</p>
+          <p class="text-xs mt-0.5" id="error-message">Unable to reach Google Sheets. Please check your internet connection or Google Apps Script deployment permissions.</p>
         </div>
       </div>
 
@@ -124,7 +124,7 @@ import { AdContainer } from '../components/AdContainer';
           ></textarea>
         </div>
 
-        <!-- Submit Button -->
+        <!-- Submit Button & Controls -->
         <div class="pt-2 flex items-center justify-between gap-4 flex-wrap">
           <button
             type="submit"
@@ -136,19 +136,50 @@ import { AdContainer } from '../components/AdContainer';
           </button>
           
           <span class="text-[11px] text-neutral-500 dark:text-neutral-400">
-            🔒 Logged securely to Google Sheets
+            🔒 Logged directly to Google Sheets
           </span>
         </div>
       </form>
     </div>
 
-    <!-- Connected Google Sheet Info Badge -->
-    <div class="bg-neutral-50 dark:bg-[#181818] border border-neutral-200/80 dark:border-neutral-800 rounded-xl p-4 text-xs text-neutral-600 dark:text-neutral-400 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-2">
-        <span class="text-lg">📊</span>
-        <span>Connected to Google Apps Script Web App</span>
+    <!-- Google Sheet Configuration & Setup Instructions -->
+    <div class="bg-neutral-50 dark:bg-[#181818] border border-neutral-200/80 dark:border-neutral-800 rounded-xl p-5 text-xs text-neutral-700 dark:text-neutral-300 space-y-3">
+      <div class="flex items-center justify-between gap-2 border-b border-neutral-200 dark:border-neutral-700 pb-2">
+        <span class="font-bold text-sm text-neutral-900 dark:text-white flex items-center gap-2">
+          <span>📊</span>
+          <span>Google Apps Script Setup Checklist</span>
+        </span>
+        <span class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-sky-300 font-mono text-[10px] font-bold">Important</span>
       </div>
-      <span class="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-mono text-[10px] font-bold">Active</span>
+
+      <p class="leading-relaxed">
+        If rows are not appearing in your Google Sheet, verify these 2 settings in your Google Apps Script:
+      </p>
+
+      <ol class="list-decimal list-inside space-y-1.5 text-neutral-600 dark:text-neutral-400">
+        <li><strong>Access Permission:</strong> In Apps Script, click <strong>Deploy &gt; Manage deployments &gt; Edit (pencil icon)</strong>, and ensure <strong>"Who has access"</strong> is set to <strong class="text-neutral-900 dark:text-white font-semibold">"Anyone"</strong> (NOT "Only myself").</li>
+        <li><strong>Code in Code.gs:</strong> Paste this exact code in your Google Sheet's <em>Extensions &gt; Apps Script</em>:</li>
+      </ol>
+
+      <pre class="p-3 bg-neutral-900 text-emerald-400 rounded-lg font-mono text-[11px] overflow-x-auto select-all leading-relaxed">
+function doPost(e) &#123;
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var p = e.parameter;
+  sheet.appendRow([
+    new Date(),
+    p.name || '',
+    p.email || '',
+    p.category || '',
+    p.subject || '',
+    p.message || ''
+  ]);
+  return ContentService.createTextOutput(JSON.stringify(&#123; result: "success" &#125;))
+    .setMimeType(ContentService.MimeType.JSON);
+&#125;
+
+function doGet(e) &#123;
+  return doPost(e);
+&#125;</pre>
     </div>
 
     <AdContainer slot="bottom-leaderboard" />
@@ -176,21 +207,48 @@ import { AdContainer } from '../components/AdContainer';
         if (successAlert) successAlert.classList.add('hidden');
         if (errorAlert) errorAlert.classList.add('hidden');
 
-        const formData = new FormData(form);
-        formData.append('timestamp', new Date().toISOString());
+        // Extract values
+        const nameVal = form.elements['name'].value;
+        const emailVal = form.elements['email'].value;
+        const categoryVal = form.elements['category'].value;
+        const subjectVal = form.elements['subject'].value;
+        const messageVal = form.elements['message'].value;
+        const timestampVal = new Date().toISOString();
+
+        // Encode as URLSearchParams so Google Apps Script e.parameter correctly parses all fields
+        const params = new URLSearchParams();
+        params.append('timestamp', timestampVal);
+        params.append('name', nameVal);
+        params.append('email', emailVal);
+        params.append('category', categoryVal);
+        params.append('subject', subjectVal);
+        params.append('message', messageVal);
 
         try {
+          // Send via standard POST with urlencoded body
           await fetch(GOOGLE_SHEET_URL, {
             method: 'POST',
-            mode: 'no-cors', // Google Apps Script redirects after POST, no-cors ensures clean execution
-            body: formData,
+            mode: 'no-cors',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: params.toString(),
           });
 
           if (successAlert) successAlert.classList.remove('hidden');
           form.reset();
         } catch (err) {
-          if (successAlert) successAlert.classList.remove('hidden');
-          form.reset();
+          // Fallback GET request if POST is blocked by browser policy
+          try {
+            await fetch(`${GOOGLE_SHEET_URL}?${params.toString()}`, {
+              method: 'GET',
+              mode: 'no-cors',
+            });
+            if (successAlert) successAlert.classList.remove('hidden');
+            form.reset();
+          } catch (getErr) {
+            if (errorAlert) errorAlert.classList.remove('hidden');
+          }
         } finally {
           if (submitBtn) submitBtn.disabled = false;
           if (btnText) btnText.textContent = 'Submit Message';
