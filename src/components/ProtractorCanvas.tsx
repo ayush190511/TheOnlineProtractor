@@ -26,6 +26,34 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
   const [zoomLevel, setZoomLevel] = useState(1.0);
   const [panOffset, setPanOffset] = useState<Point>({ x: 0, y: 0 });
 
+  // Real-time Dark Mode tracking for Canvas Context rendering
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    if (typeof document !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const syncTheme = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+
+    syncTheme();
+
+    const observer = new MutationObserver(syncTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+    window.addEventListener('theme-change', syncTheme);
+    window.addEventListener('storage', syncTheme);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('theme-change', syncTheme);
+      window.removeEventListener('storage', syncTheme);
+    };
+  }, []);
+
   // Handle global paste event (Ctrl+V / Cmd+V anywhere on page)
   useEffect(() => {
     const handlePaste = (e: ClipboardEvent) => {
@@ -113,7 +141,6 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
     const render = () => {
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
-      const isDark = document.documentElement.classList.contains('dark');
 
       // Resize backing store for crisp Retina rendering
       const displayWidth = Math.floor(rect.width);
@@ -130,8 +157,8 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
 
       // 1. Draw Background Grid
       const bgColor = isDark ? '#141414' : '#ffffff';
-      const minorGridColor = isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.04)';
-      const majorGridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+      const minorGridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)';
+      const majorGridColor = isDark ? 'rgba(255, 255, 255, 0.10)' : 'rgba(0, 0, 0, 0.08)';
 
       if (showGrid) {
         ctx.save();
@@ -219,12 +246,12 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
     return () => {
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
-  }, [showGrid, loadedImage, isCameraActive, zoomLevel, panOffset]);
+  }, [showGrid, loadedImage, isCameraActive, zoomLevel, panOffset, isDark]);
 
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-[480px] sm:h-[600px] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl overflow-hidden shadow-inner bg-white dark:bg-[#141414] select-none transition-all ${
+      className={`relative w-full h-[480px] sm:h-[600px] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl overflow-hidden shadow-inner bg-white dark:bg-[#141414] select-none transition-colors ${
         isDragOver ? 'ring-4 ring-blue-400 bg-blue-50/20 dark:bg-blue-950/20' : ''
       }`}
       onDragOver={(e) => {

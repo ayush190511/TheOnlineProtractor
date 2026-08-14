@@ -46,7 +46,6 @@ export const ProtractorApp: React.FC<ProtractorAppProps> = ({
   const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
 
   // Coordinates State
-  // Initial default layout centered around (350, 320)
   const [state, setState] = useState<ProtractorState>({
     vertex: { x: 340, y: 320 },
     armA: { x: 500, y: 320 },
@@ -115,12 +114,11 @@ export const ProtractorApp: React.FC<ProtractorAppProps> = ({
     e.preventDefault();
     e.stopPropagation();
 
-    // Set pointer capture on target element so dragging remains smooth even if pointer leaves handle
     (e.currentTarget as Element).setPointerCapture(e.pointerId);
 
-    const pt = getCanvasCoordinates(e);
+    const pos = getCanvasCoordinates(e);
     setActiveHandle(handle);
-    setDragStartPoint(pt);
+    setDragStartPoint(pos);
     setInitialVertexAtDrag({ ...state.vertex });
     setInitialArmAAtDrag({ ...state.armA });
     setInitialArmBAtDrag({ ...state.armB });
@@ -128,145 +126,161 @@ export const ProtractorApp: React.FC<ProtractorAppProps> = ({
     setInitialRotationAtDrag(state.protractorRotation);
   };
 
-  // Pointer Move on SVG Viewport
-  const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+  // Pointer Move on SVG Canvas
+  const handlePointerMove = (e: React.PointerEvent) => {
     if (!activeHandle) return;
-    const pt = getCanvasCoordinates(e);
+    e.preventDefault();
+
+    const currentPos = getCanvasCoordinates(e);
+    const dx = currentPos.x - dragStartPoint.x;
+    const dy = currentPos.y - dragStartPoint.y;
 
     if (activeHandle === 'vertex') {
-      // Move Vertex and translate Arm A, Arm B and Protractor Center together
-      const dx = pt.x - dragStartPoint.x;
-      const dy = pt.y - dragStartPoint.y;
+      const newV = { x: initialVertexAtDrag.x + dx, y: initialVertexAtDrag.y + dy };
+      const newA = { x: initialArmAAtDrag.x + dx, y: initialArmAAtDrag.y + dy };
+      const newB = { x: initialArmBAtDrag.x + dx, y: initialArmBAtDrag.y + dy };
+      const newCenter = { x: initialCenterAtDrag.x + dx, y: initialCenterAtDrag.y + dy };
 
       setState((prev) => ({
         ...prev,
-        vertex: { x: initialVertexAtDrag.x + dx, y: initialVertexAtDrag.y + dy },
-        armA: { x: initialArmAAtDrag.x + dx, y: initialArmAAtDrag.y + dy },
-        armB: { x: initialArmBAtDrag.x + dx, y: initialArmBAtDrag.y + dy },
-        protractorCenter: { x: initialCenterAtDrag.x + dx, y: initialCenterAtDrag.y + dy },
+        vertex: newV,
+        armA: newA,
+        armB: newB,
+        protractorCenter: newCenter,
       }));
     } else if (activeHandle === 'armA') {
-      // Drag Arm A
-      setState((prev) => ({
-        ...prev,
-        armA: { x: pt.x, y: pt.y },
-      }));
-    } else if (activeHandle === 'armB') {
-      // Drag Arm B with Angle Snapping
-      let targetPt = { x: pt.x, y: pt.y };
+      let finalA = { x: currentPos.x, y: currentPos.y };
 
       if (snapEnabled) {
-        const rawAngle = calculateAngle(state.vertex, state.armA, targetPt);
-        const { snapped, angle: snapAngle } = checkAngleSnap(rawAngle, 2.5);
-        if (snapped) {
-          targetPt = setArmAngle(state.vertex, state.armA, targetPt, snapAngle);
+        const rawAngle = calculateAngle(state.vertex, finalA, state.armB);
+        const snapped = checkAngleSnap(rawAngle, 2.0);
+        if (snapped.snapped) {
+          const armLen = Math.hypot(finalA.x - state.vertex.x, finalA.y - state.vertex.y);
+          const angleB = getVectorAngle(state.vertex, state.armB);
+          finalA = setArmAngle(state.vertex, angleB + snapped.angle, armLen);
         }
       }
 
       setState((prev) => ({
         ...prev,
-        armB: targetPt,
+        armA: finalA,
+      }));
+    } else if (activeHandle === 'armB') {
+      let finalB = { x: currentPos.x, y: currentPos.y };
+
+      if (snapEnabled) {
+        const rawAngle = calculateAngle(state.vertex, state.armA, finalB);
+        const snapped = checkAngleSnap(rawAngle, 2.0);
+        if (snapped.snapped) {
+          const armLen = Math.hypot(finalB.x - state.vertex.x, finalB.y - state.vertex.y);
+          const angleA = getVectorAngle(state.vertex, state.armA);
+          finalB = setArmAngle(state.vertex, angleA - snapped.angle, armLen);
+        }
+      }
+
+      setState((prev) => ({
+        ...prev,
+        armB: finalB,
       }));
     } else if (activeHandle === 'protractorCenter') {
-      // Move protractor dial body independently
-      const dx = pt.x - dragStartPoint.x;
-      const dy = pt.y - dragStartPoint.y;
-
       setState((prev) => ({
         ...prev,
         protractorCenter: { x: initialCenterAtDrag.x + dx, y: initialCenterAtDrag.y + dy },
       }));
     } else if (activeHandle === 'protractorRotate') {
-      // Rotate protractor dial
-      const currentAngleFromCenter = getVectorAngle(state.protractorCenter, pt);
-      const startAngleFromCenter = getVectorAngle(state.protractorCenter, dragStartPoint);
-      const deltaAngle = currentAngleFromCenter - startAngleFromCenter;
-
+      const angleRad = Math.atan2(currentPos.y - state.protractorCenter.y, currentPos.x - state.protractorCenter.x);
+      const angleDeg = (angleRad * 180) / Math.PI;
       setState((prev) => ({
         ...prev,
-        protractorRotation: normalizeAngle(initialRotationAtDrag + deltaAngle),
+        protractorRotation: angleDeg,
       }));
     }
   };
 
-  // Pointer Up / Cancel
-  const handlePointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
+  const handlePointerUp = (e: React.PointerEvent) => {
     if (activeHandle) {
       try {
-        (e.target as Element).releasePointerCapture(e.pointerId);
-      } catch {
-        // Safe catch if element was uncaptured
-      }
+        (e.currentTarget as Element).releasePointerCapture(e.pointerId);
+      } catch (err) {}
       setActiveHandle(null);
     }
   };
 
-  // Fine-Tune Nudge Angle Button
-  const handleNudgeAngle = (delta: number) => {
-    const newAngle = normalizeAngle(currentAngle + delta);
-    const newArmB = setArmAngle(state.vertex, state.armA, state.armB, newAngle);
-    setState((prev) => ({ ...prev, armB: newArmB }));
-  };
-
-  // Reset Handles to Default 45°
-  const handleResetPins = () => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const cx = Math.floor(rect.width / 2);
-    const cy = Math.floor(rect.height / 2 + 30);
-    const r = state.protractorRadius;
-    const armLen = r * 0.9;
-    const rad45 = (-45 * Math.PI) / 180;
+  const handleNudgeAngle = (deltaDegrees: number) => {
+    const angleA = getVectorAngle(state.vertex, state.armA);
+    const armLenB = Math.hypot(state.armB.x - state.vertex.x, state.armB.y - state.vertex.y);
+    const newAngle = normalizeAngle(currentAngle + deltaDegrees);
+    const newB = setArmAngle(state.vertex, angleA - newAngle, armLenB);
 
     setState((prev) => ({
       ...prev,
-      vertex: { x: cx, y: cy },
-      armA: { x: cx + armLen, y: cy },
-      armB: { x: cx + armLen * Math.cos(rad45), y: cy + armLen * Math.sin(rad45) },
-      protractorCenter: { x: cx, y: cy },
-      protractorRotation: 0,
+      armB: newB,
     }));
   };
 
-  // Flip Protractor Baseline
+  const handleResetPins = () => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const cx = Math.floor(rect.width / 2);
+      const cy = Math.floor(rect.height / 2 + 30);
+      const r = Math.min(180, Math.floor(rect.width * 0.38));
+      const armLength = r * 0.9;
+      const deg45Rad = (-45 * Math.PI) / 180;
+
+      setState({
+        vertex: { x: cx, y: cy },
+        armA: { x: cx + armLength, y: cy },
+        armB: { x: cx + armLength * Math.cos(deg45Rad), y: cy + armLength * Math.sin(deg45Rad) },
+        protractorCenter: { x: cx, y: cy },
+        protractorRadius: r,
+        protractorRotation: 0,
+        mode: protractorMode,
+        opacity: opacity,
+        snapToCommonAngles: snapEnabled,
+        showGrid: showGrid,
+        showMagnifier: showMagnifier,
+        showDegreesOnArc: true,
+        displayAngleType: 'interior',
+        scale: 1,
+        pan: { x: 0, y: 0 },
+      });
+    }
+  };
+
   const handleFlipProtractor = () => {
     setState((prev) => ({
       ...prev,
-      protractorRotation: normalizeAngle(prev.protractorRotation + 180),
+      protractorRotation: (prev.protractorRotation + 180) % 360,
     }));
   };
 
-  // Export Composite High-Res Image
   const handleExportImage = () => {
     exportProtractorImage(canvasRef.current, svgRef.current, angleInfo);
   };
 
-  // Point tracked by Magnifier Loupe (if active)
-  const magnifierTargetPoint = (() => {
-    if (!showMagnifier || !activeHandle) return null;
-    if (activeHandle === 'vertex') return state.vertex;
-    if (activeHandle === 'armA') return state.armA;
-    if (activeHandle === 'armB') return state.armB;
-    return null;
-  })();
+  let magnifierTargetPoint: Point | null = null;
+  let magnifierHandleName = '';
+  let magnifierHandleColor = '#f97316';
 
-  const magnifierHandleColor = (() => {
-    if (activeHandle === 'vertex') return '#f97316';
-    if (activeHandle === 'armA') return '#3b82f6';
-    if (activeHandle === 'armB') return '#10b981';
-    return '#0075de';
-  })();
-
-  const magnifierHandleName = (() => {
-    if (activeHandle === 'vertex') return 'Vertex (V)';
-    if (activeHandle === 'armA') return 'Arm A (Ray)';
-    if (activeHandle === 'armB') return 'Arm B (Ray)';
-    return 'Handle';
-  })();
+  if (showMagnifier && activeHandle) {
+    if (activeHandle === 'vertex') {
+      magnifierTargetPoint = state.vertex;
+      magnifierHandleName = 'Vertex (V)';
+      magnifierHandleColor = '#f97316';
+    } else if (activeHandle === 'armA') {
+      magnifierTargetPoint = state.armA;
+      magnifierHandleName = 'Baseline Arm (A)';
+      magnifierHandleColor = '#3b82f6';
+    } else if (activeHandle === 'armB') {
+      magnifierTargetPoint = state.armB;
+      magnifierHandleName = 'Angle Ray (B)';
+      magnifierHandleColor = '#10b981';
+    }
+  }
 
   return (
-    <div className="w-full max-w-5xl mx-auto flex flex-col gap-4">
-      {/* 1. Angle Readout Header Card */}
+    <div className="w-full flex flex-col gap-3 font-sans">
+      {/* 1. Real-time Angle Readout & Badge */}
       <AngleReadout
         angleInfo={angleInfo}
         displayAngleType={displayAngleType}
@@ -277,7 +291,7 @@ export const ProtractorApp: React.FC<ProtractorAppProps> = ({
       {/* 2. Interactive Protractor Viewport (Stacked Layers 1, 2, 3) */}
       <div
         ref={containerRef}
-        className="relative w-full rounded-2xl overflow-hidden shadow-sm bg-white"
+        className="relative w-full rounded-2xl overflow-hidden shadow-sm bg-white dark:bg-[#141414] transition-colors"
         style={{ touchAction: 'none' }}
       >
         {/* Layer 1: Bottom Canvas (Hardware-accelerated Image/Grid/Webcam) */}
@@ -323,9 +337,9 @@ export const ProtractorApp: React.FC<ProtractorAppProps> = ({
         />
 
         {/* Quick Instructions Pill on Top-Right */}
-        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-xs border border-neutral-200/80 px-3 py-1 rounded-full text-[11px] font-semibold text-neutral-600 shadow-xs pointer-events-none flex items-center gap-1.5 hidden sm:flex">
+        <div className="absolute top-3 right-3 bg-white/90 dark:bg-[#1e1e1e]/90 backdrop-blur-xs border border-neutral-200/80 dark:border-neutral-700 px-3 py-1 rounded-full text-[11px] font-semibold text-neutral-600 dark:text-neutral-300 shadow-xs pointer-events-none flex items-center gap-1.5 hidden sm:flex">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>Drag Orange <strong className="text-orange-600">V</strong>, Blue <strong className="text-blue-600">A</strong>, or Green <strong className="text-emerald-600">B</strong></span>
+          <span>Drag Orange <strong className="text-orange-600 dark:text-orange-400">V</strong>, Blue <strong className="text-blue-600 dark:text-sky-400">A</strong>, or Green <strong className="text-emerald-600 dark:text-emerald-400">B</strong></span>
         </div>
       </div>
 

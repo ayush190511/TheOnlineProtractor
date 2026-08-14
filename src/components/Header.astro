@@ -261,6 +261,7 @@ const { activePage = 'home' } = Astro.props;
           localStorage.setItem('theme', 'dark');
         }
         syncThemeIcons();
+        window.dispatchEvent(new CustomEvent('theme-change', { detail: { isDark: !currentlyDark } }));
       };
     }
 
