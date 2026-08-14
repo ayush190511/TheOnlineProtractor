@@ -1,0 +1,77 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { ProtractorApp } from '../components/ProtractorApp';
+import { AdContainer } from '../components/AdContainer';
+import FaqAccordion from '../components/FaqAccordion.astro';
+---
+
+<Layout
+  title="360 Degree Online Protractor Tool — Full Circle Digital Protractor"
+  description="Full 360° virtual circle protractor tool at TheOnlineProtractor.com. Measure reflex angles, compass bearings, navigation headings, and complete rotations."
+  activePage="360"
+>
+  <!-- Hero Section -->
+  <section class="text-center pt-2 pb-6 max-w-3xl mx-auto">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 border border-purple-200/60 text-purple-700 text-xs font-bold mb-3 shadow-2xs">
+      <span>⭕ Full Circle Digital Protractor</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-purple-600"></span>
+      <span class="text-neutral-500 font-normal">0° to 360° Sweep</span>
+    </div>
+    
+    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-neutral-900 tracking-tight mb-3">
+      360 Degree Online Protractor Tool
+    </h1>
+    <p class="text-sm sm:text-base text-neutral-600 max-w-2xl mx-auto leading-relaxed">
+      A complete 360° circular <strong>digital protractor</strong> on <strong>TheOnlineProtractor.com</strong> designed for measuring reflex angles (180°–360°), astronomy coordinates, clockwise compass bearings, and rotary angles.
+    </p>
+  </section>
+
+  <AdContainer slot="top-leaderboard" />
+
+  <!-- Interactive Protractor Island initialized in 360 Mode -->
+  <div class="my-4">
+    <ProtractorApp client:load initialToolMode="standard" initialProtractorMode="360" />
+  </div>
+
+  <AdContainer slot="bottom-leaderboard" />
+
+  <!-- 360° Degrees & Navigation Guide -->
+  <section class="w-full my-12 text-neutral-800">
+    <div class="border-b border-neutral-200/80 pb-4 mb-8">
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
+        Understanding 360° Protractors & Compass Bearings
+      </h2>
+      <p class="text-neutral-500 text-sm mt-1">
+        Why choose a 360° digital protractor instead of a traditional 180° semi-circle?
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-[#faf9f8] border border-neutral-200/80 rounded-xl p-5">
+        <span class="text-2xl mb-3 block">🧭</span>
+        <h3 class="font-bold text-neutral-900 text-base mb-2">Navigation & Compass Headings</h3>
+        <p class="text-xs text-neutral-600 leading-relaxed">
+          Sailors, aviators, and cartographers use 360° bearings measured clockwise from True North (000°): East is 090°, South is 180°, and West is 270°.
+        </p>
+      </div>
+
+      <div class="bg-[#faf9f8] border border-neutral-200/80 rounded-xl p-5">
+        <span class="text-2xl mb-3 block">🟡</span>
+        <h3 class="font-bold text-neutral-900 text-base mb-2">Direct Reflex Angle Measurement</h3>
+        <p class="text-xs text-neutral-600 leading-relaxed">
+          Angles greater than 180° are known as reflex angles. While a 180° protractor requires subtraction, a 360° circle tool measures them directly.
+        </p>
+      </div>
+
+      <div class="bg-[#faf9f8] border border-neutral-200/80 rounded-xl p-5">
+        <span class="text-2xl mb-3 block">⏰</span>
+        <h3 class="font-bold text-neutral-900 text-base mb-2">Rotational Geometry & Clock Math</h3>
+        <p class="text-xs text-neutral-600 leading-relaxed">
+          Each hour on a clock face is 30° ($360^\circ \div 12 = 30^\circ$). Perfect for online protractor practice with rotational symmetry and circular trigonometry.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <FaqAccordion />
+</Layout>

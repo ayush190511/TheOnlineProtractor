@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-canvas: #ffffff;
+    --color-canvas-soft: #f6f5f4;
+    --color-surface: #ffffff;
+    --color-ink: #000000;
+    --color-ink-secondary: #31302e;
+    --color-ink-muted: #615d59;
+    --color-ink-faint: #a39e98;
+    --color-hairline: #e6e6e6;
+    
+    --color-primary: #0075de;
+    --color-primary-active: #005bab;
+    --color-secondary: #213183;
+
+    --color-vertex: #f97316;
+    --color-arm-a: #3b82f6;
+    --color-arm-b: #10b981;
+    --color-protractor-arc: rgba(0, 117, 222, 0.18);
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Notion Paper Grid pattern */
+.bg-grid-paper {
+  background-size: 20px 20px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+}
+
+.bg-dot-paper {
+  background-size: 16px 16px;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+}
+
+/* Custom Notion-styled scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(0, 117, 222, 0.2);
+  color: inherit;
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .print-page {
+    page-break-after: always;
+    break-after: page;
+  }
+}

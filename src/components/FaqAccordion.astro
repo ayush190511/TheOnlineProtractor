@@ -1,0 +1,76 @@
+---
+const faqs = [
+  {
+    q: "What is a protractor (what's a protractor)?",
+    a: "A protractor is a fundamental geometric instrument used to measure, calculate, and construct angles. It is typically marked with degrees from 0° to 180° (a semi-circular protractor) or 0° to 360° (a full circle protractor). In modern digital workflows, TheOnlineProtractor.com provides an online protractor tool that functions as an interactive digital protractor on any computer, tablet, or smartphone screen."
+  },
+  {
+    q: "What does a protractor look like?",
+    a: "A standard physical protractor is a clear, semi-circular piece of plastic, metal, or wood. It features a straight bottom edge (the baseline ruler) with a small origin hole or crosshair in the center (the vertex mark), and a curved outer edge stamped with degree tick marks (0° to 180°). Most protractors include two sets of numbers (an inner scale and an outer scale) so you can measure angles opening in either direction."
+  },
+  {
+    q: "What is a protractor used for?",
+    a: "A protractor is used for measuring angles between two intersecting lines, drawing precise angles for geometry homework, drafting architectural blueprints, setting saw blade angles in woodworking, calculating navigation headings in aviation and sailing, and plotting computer graphics. In schools, it is an essential mathematics tool introduced in 4th and 5th grade geometry."
+  },
+  {
+    q: "How to use a protractor to measure angles (how to use protractor)?",
+    a: "To measure angles with a protractor, follow these 3 simple steps: 1) Place the center origin hole of the protractor directly over the angle's vertex (where the two lines meet). 2) Align the straight baseline of the protractor with one of the angle's rays so it points to 0°. 3) Look at where the second ray crosses the curved degree scale and read the exact number of degrees. On TheOnlineProtractor.com, simply drag the Orange handle (V) to the vertex, the Blue handle (A) to the baseline, and the Green handle (B) along the second ray!"
+  },
+  {
+    q: "How to read a protractor with double scales (inner vs outer numbers)?",
+    a: "Because angles can open to the left or to the right, protractors have two scales: 1) If your base ray points to the right (0° on the outer scale), read the outer scale as the angle opens counter-clockwise. 2) If your base ray points to the left (0° on the inner scale), read the inner scale as the angle opens clockwise. With our online protractor tool, the digital angle readout automatically computes the exact angle without any scale confusion."
+  },
+  {
+    q: "How to measure angles without a protractor?",
+    a: "If you don't have a physical protractor handy, you have several quick alternatives: 1) Use TheOnlineProtractor.com — take a quick photo of your angle with your phone or press Ctrl+V to paste a screenshot directly onto this screen. 2) Paper-folding method: A sheet of paper has 90° right angles at every corner; fold it diagonally in half to create an accurate 45° angle reference. 3) Trigonometry: Measure the opposite and adjacent sides of a right triangle formed by the angle and calculate the angle using θ = arctan(opposite / adjacent). 4) Print our free protractor printable template (1:1 actual scale PDF)."
+  },
+  {
+    q: "How to use a protractor and compass together?",
+    a: "A protractor and compass are the classic duo for Euclidean geometric constructions. You use the compass to draw perfect circles, measure equal line lengths, and create intersecting arc bisectors, while using the protractor to set exact angle degrees (such as 30°, 45°, 60°, or 90°), construct polygons (triangles, hexagons, pentagons), or verify angle bisectors."
+  },
+  {
+    q: "Can I use this for measuring angles with a protractor worksheet or online protractor practice?",
+    a: "Yes! Students and teachers frequently use TheOnlineProtractor.com for online protractor practice and solving 'measuring angles with a protractor worksheet' assignments. Simply take a screenshot or photo of your math worksheet, upload it into 'Image / Worksheet' mode, and place the digital pins right over the worksheet exercises to find the answers with 0.1° accuracy."
+  },
+  {
+    q: "Is this digital protractor tool free and private?",
+    a: "Yes, TheOnlineProtractor.com is 100% free with no registration, no installation, and no ads that shift the screen. All image processing and angle geometry execute strictly inside your local web browser's HTML5 Canvas, ensuring that your photos, files, and camera feeds remain completely private."
+  },
+  {
+    q: "How do I print a protractor from this website?",
+    a: "Navigate to the 'Protractor Printable' tab in the top navigation. We provide calibrated 1:1 scale 180° semi-circular and 360° circular vector protractor templates with 50mm calibration test bars. In your print dialog, select '100%' scale (not 'Fit to Page') for a razor-sharp, actual-size paper protractor."
+  }
+];
+---
+
+<section class="w-full my-12" aria-labelledby="faq-heading">
+  <div class="border-b border-neutral-200/80 pb-4 mb-6">
+    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold mb-2">
+      <span>❓ Frequently Asked Questions</span>
+    </div>
+    <h2 id="faq-heading" class="text-2xl sm:text-3xl font-black text-neutral-900 tracking-tight">
+      Frequently Asked Questions About Protractors & Angle Measurement
+    </h2>
+    <p class="text-neutral-500 text-sm mt-1">
+      Everything you need to know about what a protractor is, how to use a protractor to measure angles, and digital protractor tips.
+    </p>
+  </div>
+
+  <div class="space-y-3">
+    {faqs.map((faq) => (
+      <details
+        class="group border border-neutral-200/80 rounded-xl bg-white p-4.5 transition-all open:bg-[#faf9f8] open:shadow-xs"
+      >
+        <summary class="flex items-center justify-between font-bold text-neutral-900 cursor-pointer text-sm sm:text-base select-none list-none">
+          <span>{faq.q}</span>
+          <span class="ml-4 transform group-open:rotate-180 transition-transform text-neutral-400 text-xs">
+            ▼
+          </span>
+        </summary>
+        <div class="mt-3 text-xs sm:text-sm text-neutral-600 leading-relaxed border-t border-neutral-100 pt-3">
+          {faq.a}
+        </div>
+      </details>
+    ))}
+  </div>
+</section>

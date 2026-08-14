@@ -1,0 +1,279 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { AdContainer } from '../components/AdContainer';
+---
+
+<Layout
+  title="Protractor Printable (1:1 Scale Free PDF) — TheOnlineProtractor.com"
+  description="Download and print free actual-size 180° and 360° protractor printable templates at TheOnlineProtractor.com. Calibrated for A4 & US Letter with millimeter scale test bars."
+  activePage="printable"
+>
+  <!-- Screen-Only Hero Section -->
+  <section class="text-center pt-2 pb-6 max-w-3xl mx-auto no-print">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-bold mb-3 shadow-2xs">
+      <span>🖨️ TheOnlineProtractor.com Printables</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+      <span class="text-neutral-500 font-normal">Calibrated 1:1 Actual Size</span>
+    </div>
+    
+    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-neutral-900 tracking-tight mb-3">
+      Printable Protractor (Free PDF & 1:1 Templates)
+    </h1>
+    <p class="text-sm sm:text-base text-neutral-600 max-w-2xl mx-auto leading-relaxed mb-6">
+      Need a physical protractor right now for class or geometry homework? Print our free <strong>protractor printable</strong> templates calibrated for standard 8.5" x 11" US Letter and A4 printer paper.
+    </p>
+
+    <!-- Print Action Buttons -->
+    <div class="flex items-center justify-center gap-3 flex-wrap">
+      <button
+        type="button"
+        id="print-btn"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer"
+      >
+        <span>🖨️ Print Protractor / Save PDF</span>
+      </button>
+
+      <a
+        href="#instructions"
+        class="px-5 py-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-full text-sm font-semibold transition-colors"
+      >
+        Printing Instructions
+      </a>
+    </div>
+  </section>
+
+  <AdContainer slot="top-leaderboard" />
+
+  <!-- Printable Area (Formatted for both screen preview & @media print) -->
+  <div class="my-6 bg-white border border-neutral-300 rounded-2xl p-6 sm:p-10 shadow-md max-w-4xl mx-auto print:border-none print:shadow-none print:p-0 print:m-0">
+    
+    <!-- Print Header -->
+    <div class="text-center mb-6 print:mb-4 border-b border-neutral-200 pb-4">
+      <h2 class="text-xl font-black text-neutral-900">
+        TheOnlineProtractor.com — 1:1 Scale Printable Protractor
+      </h2>
+      <p class="text-xs text-neutral-500">
+        Ensure printer scale is set to <strong>"100%"</strong> or <strong>"Actual Size"</strong> (Do NOT select "Fit to Page").
+      </p>
+    </div>
+
+    <!-- Scale Verification Ruler Box -->
+    <div class="mb-8 p-3 bg-neutral-50 border border-dashed border-neutral-300 rounded-lg flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-700">
+      <div>
+        <span class="font-bold">Scale Test Bar: </span>
+        <span>Measure this 50mm / 5cm bar with a ruler after printing to verify 100% scale.</span>
+      </div>
+      <!-- Exactly 50mm CSS width -->
+      <div class="flex flex-col items-center">
+        <div style="width: 50mm; height: 10px;" class="bg-neutral-900 border border-black flex justify-between px-1 text-[8px] text-white font-mono items-center">
+          <span>0</span>
+          <span>50mm</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Template 1: 180 Degree Half Circle Dial -->
+    <div class="mb-14 flex flex-col items-center justify-center">
+      <h3 class="text-sm font-bold text-neutral-700 mb-2 no-print">180° Standard Protractor (15cm Diameter)</h3>
+      <svg
+        viewBox="-160 -160 320 185"
+        style="width: 150mm; height: auto;"
+        class="max-w-full overflow-visible"
+      >
+        <!-- Outer Semi Circle -->
+        <path
+          d="M -140 0 A 140 140 0 0 1 140 0 L 140 15 L -140 15 Z"
+          fill="none"
+          stroke="#000000"
+          stroke-width="1.5"
+        ></path>
+        <!-- Inner Cutout Arch -->
+        <circle r="60" fill="none" stroke="#666666" stroke-width="0.75" stroke-dasharray="3 3"></circle>
+        
+        <!-- Center Crosshair and Origin Hole -->
+        <line x1="-15" y1="0" x2="15" y2="0" stroke="#000000" stroke-width="1"></line>
+        <line x1="0" y1="-15" x2="0" y2="15" stroke="#000000" stroke-width="1"></line>
+        <circle r="3" fill="none" stroke="#000000" stroke-width="1"></circle>
+
+        <!-- 180 Ticks & Numbers -->
+        {Array.from({ length: 181 }, (_, i) => {
+          const isTen = i % 10 === 0;
+          const isFive = i % 5 === 0 && !isTen;
+          const tickLen = isTen ? 14 : isFive ? 9 : 5;
+          const strokeW = isTen ? 1.2 : 0.6;
+          const rad = (i * Math.PI) / 180;
+          const cos = Math.cos(rad);
+          const sin = Math.sin(rad);
+          const x1 = cos * 140;
+          const y1 = -sin * 140;
+          const x2 = cos * (140 - tickLen);
+          const y2 = -sin * (140 - tickLen);
+
+          // Outer label
+          const lx = cos * 116;
+          const ly = -sin * 116;
+          // Inner label
+          const ilx = cos * 98;
+          const ily = -sin * 98;
+
+          return (
+            <g>
+              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#000000" stroke-width={strokeW}></line>
+              {isTen && (
+                <g>
+                  <text
+                    x={lx}
+                    y={ly}
+                    font-size="7.5"
+                    font-family="sans-serif"
+                    font-weight="bold"
+                    fill="#000000"
+                    text-anchor="middle"
+                    dominant-baseline="central"
+                    transform={`rotate(${-i + 90}, ${lx}, ${ly})`}
+                  >
+                    {i}
+                  </text>
+                  <text
+                    x={ilx}
+                    y={ily}
+                    font-size="6.5"
+                    font-family="sans-serif"
+                    font-weight="normal"
+                    fill="#444444"
+                    text-anchor="middle"
+                    dominant-baseline="central"
+                    transform={`rotate(${-i + 90}, ${ilx}, ${ily})`}
+                  >
+                    {180 - i}
+                  </text>
+                </g>
+              )}
+            </g>
+          );
+        })}
+
+        <!-- Bottom straight ruler (cm/mm markings) -->
+        {Array.from({ length: 29 }, (_, idx) => {
+          const val = idx - 14;
+          const x = val * 9.33;
+          const isCm = idx % 2 === 0;
+          const h = isCm ? 8 : 4;
+          return (
+            <g>
+              <line x1={x} y1={0} x2={x} y2={h} stroke="#000000" stroke-width={isCm ? 1 : 0.5}></line>
+              {isCm && val !== 0 && (
+                <text x={x} y={h + 6} font-size="6" font-family="sans-serif" fill="#333333" text-anchor="middle">
+                  {Math.abs(val / 2)}
+                </text>
+              )}
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+
+    <!-- Template 2: 360 Degree Full Circle Dial -->
+    <div class="mb-10 flex flex-col items-center justify-center print:page-break-before">
+      <h3 class="text-sm font-bold text-neutral-700 mb-2 no-print">360° Full Circle Protractor (14cm Diameter)</h3>
+      <svg
+        viewBox="-160 -160 320 320"
+        style="width: 140mm; height: auto;"
+        class="max-w-full overflow-visible"
+      >
+        <circle r="135" fill="none" stroke="#000000" stroke-width="1.5"></circle>
+        <circle r="55" fill="none" stroke="#666666" stroke-width="0.75" stroke-dasharray="3 3"></circle>
+        
+        <!-- Center Crosshairs -->
+        <line x1="-15" y1="0" x2="15" y2="0" stroke="#000000" stroke-width="1"></line>
+        <line x1="0" y1="-15" x2="0" y2="15" stroke="#000000" stroke-width="1"></line>
+        <circle r="3" fill="none" stroke="#000000" stroke-width="1"></circle>
+
+        {Array.from({ length: 360 }, (_, deg) => {
+          const isTen = deg % 10 === 0;
+          const isFive = deg % 5 === 0 && !isTen;
+          const tickLen = isTen ? 12 : isFive ? 8 : 4;
+          const strokeW = isTen ? 1.1 : 0.5;
+          const rad = (deg * Math.PI) / 180;
+          const cos = Math.cos(rad);
+          const sin = Math.sin(rad);
+          const x1 = cos * 135;
+          const y1 = -sin * 135;
+          const x2 = cos * (135 - tickLen);
+          const y2 = -sin * (135 - tickLen);
+          const lx = cos * 114;
+          const ly = -sin * 114;
+
+          return (
+            <g>
+              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#000000" stroke-width={strokeW}></line>
+              {isTen && (
+                <text
+                  x={lx}
+                  y={ly}
+                  font-size="7"
+                  font-family="sans-serif"
+                  font-weight="bold"
+                  fill="#000000"
+                  text-anchor="middle"
+                  dominant-baseline="central"
+                  transform={`rotate(${-deg + 90}, ${lx}, ${ly})`}
+                >
+                  {deg}
+                </text>
+              )}
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+
+    <!-- Cutout guide notes -->
+    <div class="text-center text-[11px] text-neutral-400 mt-4 border-t border-neutral-200 pt-3">
+      ✂️ Tip: Cut along the outer solid boundary with scissors and poke a small pinhole through the center vertex crosshair. Printed from TheOnlineProtractor.com
+    </div>
+  </div>
+
+  <!-- Instructions Section -->
+  <section id="instructions" class="w-full my-12 text-neutral-800 no-print">
+    <div class="border-b border-neutral-200/80 pb-4 mb-6">
+      <h2 class="text-2xl font-bold text-neutral-900 tracking-tight">
+        Print Instructions & Calibration Guide
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-[#faf9f8] border border-neutral-200/80 rounded-xl p-5">
+        <h3 class="font-bold text-neutral-900 text-sm mb-2">1. Printer Scale Setting</h3>
+        <p class="text-xs text-neutral-600 leading-relaxed">
+          In your browser print dialog, look for the "Scale" option. Change it from "Fit to Page" to <strong>"100%"</strong> or <strong>"Actual Size"</strong>.
+        </p>
+      </div>
+
+      <div class="bg-[#faf9f8] border border-neutral-200/80 rounded-xl p-5">
+        <h3 class="font-bold text-neutral-900 text-sm mb-2">2. Verify Test Bar</h3>
+        <p class="text-xs text-neutral-600 leading-relaxed">
+          Once printed, place any standard ruler on the 50mm test bar at the top. If it measures exactly 5 centimeters, your protractor is 100% accurate.
+        </p>
+      </div>
+
+      <div class="bg-[#faf9f8] border border-neutral-200/80 rounded-xl p-5">
+        <h3 class="font-bold text-neutral-900 text-sm mb-2">3. Transparent DIY Tip</h3>
+        <p class="text-xs text-neutral-600 leading-relaxed">
+          For best results, print onto a clear overhead transparency film sheet (available at office supply stores) or glue onto a cereal box cardboard backing!
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <AdContainer slot="bottom-leaderboard" />
+
+  <script>
+    const printBtn = document.getElementById('print-btn');
+    if (printBtn) {
+      printBtn.addEventListener('click', () => {
+        window.print();
+      });
+    }
+  </script>
+</Layout>

@@ -1,0 +1,77 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { ProtractorApp } from '../components/ProtractorApp';
+import { AdContainer } from '../components/AdContainer';
+import FaqAccordion from '../components/FaqAccordion.astro';
+---
+
+<Layout
+  title="Measure Angles from Photo & Worksheet Online — TheOnlineProtractor.com"
+  description="Upload any photo, blueprint, or measuring angles with a protractor worksheet to find exact degrees online. 100% private, client-side digital protractor tool."
+  activePage="image"
+>
+  <!-- Hero Section -->
+  <section class="text-center pt-2 pb-6 max-w-3xl mx-auto">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-700 text-xs font-bold mb-3 shadow-2xs">
+      <span>🖼️ Photo & Worksheet Angle Finder</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+      <span class="text-neutral-500 font-normal">Press Ctrl + V to Paste</span>
+    </div>
+    
+    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-neutral-900 tracking-tight mb-3">
+      Measure Angles with a Protractor Worksheet Online
+    </h1>
+    <p class="text-sm sm:text-base text-neutral-600 max-w-2xl mx-auto leading-relaxed">
+      Easily solve <strong>measuring angles with a protractor worksheet</strong> assignments and real-world photos. Drag & drop any geometry worksheet, screenshot, or blueprint right onto <strong>TheOnlineProtractor.com</strong>.
+    </p>
+  </section>
+
+  <AdContainer slot="top-leaderboard" />
+
+  <!-- Interactive Protractor Island initialized in Image Mode -->
+  <div class="my-4">
+    <ProtractorApp client:load initialToolMode="image" initialProtractorMode="180" />
+  </div>
+
+  <AdContainer slot="bottom-leaderboard" />
+
+  <!-- Tips for Measuring Angles from Photos & Worksheets -->
+  <section class="w-full my-12 text-neutral-800">
+    <div class="border-b border-neutral-200/80 pb-4 mb-8">
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
+        How to Measure Angles on Homework Worksheets & Photos
+      </h2>
+      <p class="text-neutral-500 text-sm mt-1">
+        Master online protractor practice with digital images in 3 straightforward steps.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-[#faf9f8] border border-neutral-200/80 rounded-xl p-5">
+        <span class="text-2xl mb-3 block">📸</span>
+        <h3 class="font-bold text-neutral-900 text-base mb-2">1. Capture Clean Photos</h3>
+        <p class="text-xs text-neutral-600 leading-relaxed">
+          When photographing paper math worksheets, hold your phone directly above the paper (flat and perpendicular) to avoid angle distortion.
+        </p>
+      </div>
+
+      <div class="bg-[#faf9f8] border border-neutral-200/80 rounded-xl p-5">
+        <span class="text-2xl mb-3 block">🔍</span>
+        <h3 class="font-bold text-neutral-900 text-base mb-2">2. Align with 2.5x Loupe</h3>
+        <p class="text-xs text-neutral-600 leading-relaxed">
+          While dragging the Orange Vertex (V), Blue Baseline (A), or Green Ray (B), our magnified loupe activates with crosshairs for sub-pixel precision.
+        </p>
+      </div>
+
+      <div class="bg-[#faf9f8] border border-neutral-200/80 rounded-xl p-5">
+        <span class="text-2xl mb-3 block">💾</span>
+        <h3 class="font-bold text-neutral-900 text-base mb-2">3. Export Annotated PNG</h3>
+        <p class="text-xs text-neutral-600 leading-relaxed">
+          Click "Save Image (PNG)" to download your measured photo with the exact degree badge stamped on it, ready to turn in for homework!
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <FaqAccordion />
+</Layout>

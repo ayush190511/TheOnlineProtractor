@@ -1,11 +1,73 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import { ProtractorApp } from '../components/ProtractorApp';
+import { AdContainer } from '../components/AdContainer';
+import EducationalGuide from '../components/EducationalGuide.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+  title="TheOnlineProtractor.com — Free Online Protractor & Digital Angle Finder"
+  description="TheOnlineProtractor.com is the #1 free online protractor tool. Measure angles online with 180° and 360° digital protractors, upload worksheets or photos, and download printable protractors."
+  activePage="home"
+>
+  <!-- Hero Section -->
+  <section class="text-center pt-2 pb-6 max-w-3xl mx-auto">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-bold mb-3 shadow-2xs">
+      <span>📐 TheOnlineProtractor.com</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+      <span class="text-neutral-500 font-normal">0.1° High-Precision Digital Tool</span>
+    </div>
+    
+    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-neutral-900 tracking-tight mb-3">
+      Free Online Protractor & Angle Finder
+    </h1>
+    <p class="text-sm sm:text-base text-neutral-600 max-w-2xl mx-auto leading-relaxed">
+      Welcome to <strong>TheOnlineProtractor.com</strong> — the fast, kid-friendly <strong>online protractor tool</strong> designed for students, math teachers, and engineers. Measure any angle on your screen, upload math homework worksheets, paste screenshot photos with <kbd class="px-1.5 py-0.5 bg-neutral-100 border border-neutral-300 rounded text-xs font-mono font-bold text-neutral-800">Ctrl+V</kbd>, or use your live webcam with 0.1° accuracy.
+    </p>
+  </section>
+
+  <!-- Zero-CLS Top Leaderboard Ad -->
+  <AdContainer slot="top-leaderboard" />
+
+  <!-- Main Interactive Protractor Island -->
+  <div class="my-4">
+    <ProtractorApp client:load initialToolMode="standard" initialProtractorMode="180" />
+  </div>
+
+  <!-- Zero-CLS Bottom Leaderboard Ad -->
+  <AdContainer slot="bottom-leaderboard" />
+
+  <!-- Quick Feature Overview Grid for SEO & User Experience -->
+  <section class="w-full my-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-neutral-800" aria-label="Tool Features">
+    <div class="bg-[#faf9f8] border border-neutral-200/80 rounded-xl p-4.5">
+      <div class="text-2xl mb-2">🎯</div>
+      <h3 class="font-bold text-sm text-neutral-900 mb-1">2.5x Magnifier Loupe</h3>
+      <p class="text-xs text-neutral-600">Crosshair zoom automatically activates while dragging pins for sub-pixel accuracy on tiny geometry diagrams.</p>
+    </div>
+
+    <div class="bg-[#faf9f8] border border-neutral-200/80 rounded-xl p-4.5">
+      <div class="text-2xl mb-2">📋</div>
+      <h3 class="font-bold text-sm text-neutral-900 mb-1">Instant Clipboard Paste</h3>
+      <p class="text-xs text-neutral-600">Press <kbd class="px-1 bg-neutral-200 rounded font-mono">Ctrl+V</kbd> anywhere on this page to immediately load homework worksheets and screenshots.</p>
+    </div>
+
+    <div class="bg-[#faf9f8] border border-neutral-200/80 rounded-xl p-4.5">
+      <div class="text-2xl mb-2">⚡</div>
+      <h3 class="font-bold text-sm text-neutral-900 mb-1">Angle Snapping & Nudge</h3>
+      <p class="text-xs text-neutral-600">Smart magnetic snapping to 30°, 45°, 60°, 90°, and 180°, with ±0.1° and ±1.0° fine-tuning buttons.</p>
+    </div>
+
+    <div class="bg-[#faf9f8] border border-neutral-200/80 rounded-xl p-4.5">
+      <div class="text-2xl mb-2">🖨️</div>
+      <h3 class="font-bold text-sm text-neutral-900 mb-1">Printable Protractor (1:1)</h3>
+      <p class="text-xs text-neutral-600">One-click actual-size printable protractor templates calibrated with 50mm scale test bars for A4 and US Letter paper.</p>
+    </div>
+  </section>
+
+  <!-- Comprehensive 800+ Word Educational Guide -->
+  <EducationalGuide />
+
+  <!-- 10 Detailed FAQs -->
+  <FaqAccordion />
 </Layout>
