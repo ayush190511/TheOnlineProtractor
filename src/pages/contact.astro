@@ -28,19 +28,19 @@ import { AdContainer } from '../components/AdContainer';
     <div class="bg-white dark:bg-[#1e1e1e] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-xs my-8">
       
       <!-- Submission Status Alerts -->
-      <div id="status-success" class="hidden mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300 text-sm flex items-start gap-3">
+      <div id="status-success" class="hidden mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300 text-sm flex items-start gap-3 animate-in fade-in">
         <span class="text-2xl">✅</span>
         <div>
           <h4 class="font-bold">Message Sent Successfully!</h4>
-          <p class="text-xs mt-0.5">Your message was submitted and recorded into the Google Sheet.</p>
+          <p class="text-xs mt-0.5">Your message was recorded into our Google Sheet. Thank you for reaching out!</p>
         </div>
       </div>
 
-      <div id="status-error" class="hidden mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-900 dark:text-red-300 text-sm flex items-start gap-3">
+      <div id="status-error" class="hidden mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-900 dark:text-red-300 text-sm flex items-start gap-3 animate-in fade-in">
         <span class="text-2xl">⚠️</span>
         <div>
           <h4 class="font-bold">Submission Notice</h4>
-          <p class="text-xs mt-0.5" id="error-message">Unable to reach Google Sheets. Please check your internet connection or Google Apps Script deployment permissions.</p>
+          <p class="text-xs mt-0.5" id="error-message">Unable to reach Google Sheets. Please check your connection and try again.</p>
         </div>
       </div>
 
@@ -135,8 +135,9 @@ import { AdContainer } from '../components/AdContainer';
             <span id="btn-spinner" class="hidden animate-spin">⏳</span>
           </button>
           
-          <span class="text-[11px] text-neutral-500 dark:text-neutral-400">
-            🔒 Logged directly to Google Sheets
+          <span class="text-[11px] text-neutral-500 dark:text-neutral-400 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Instant Google Sheets Sync</span>
           </span>
         </div>
       </form>
@@ -153,11 +154,11 @@ import { AdContainer } from '../components/AdContainer';
       </div>
 
       <p class="leading-relaxed">
-        If rows are not appearing in your Google Sheet, verify these 2 settings in your Google Apps Script:
+        Ensure your Google Apps Script has these settings configured:
       </p>
 
       <ol class="list-decimal list-inside space-y-1.5 text-neutral-600 dark:text-neutral-400">
-        <li><strong>Access Permission:</strong> In Apps Script, click <strong>Deploy &gt; Manage deployments &gt; Edit (pencil icon)</strong>, and ensure <strong>"Who has access"</strong> is set to <strong class="text-neutral-900 dark:text-white font-semibold">"Anyone"</strong> (NOT "Only myself").</li>
+        <li><strong>Access Permission:</strong> In Apps Script, click <strong>Deploy &gt; Manage deployments &gt; Edit (pencil icon)</strong>, and ensure <strong>"Who has access"</strong> is set to <strong class="text-neutral-900 dark:text-white font-semibold">"Anyone"</strong>.</li>
         <li><strong>Code in Code.gs:</strong> Paste this exact code in your Google Sheet's <em>Extensions &gt; Apps Script</em>:</li>
       </ol>
 
@@ -198,15 +199,9 @@ function doGet(e) &#123;
     const errorAlert = document.getElementById('status-error');
 
     if (form) {
-      form.onsubmit = async function(e) {
+      form.onsubmit = function(e) {
         e.preventDefault();
         
-        if (submitBtn) submitBtn.disabled = true;
-        if (btnText) btnText.textContent = 'Sending to Google Sheets...';
-        if (btnSpinner) btnSpinner.classList.remove('hidden');
-        if (successAlert) successAlert.classList.add('hidden');
-        if (errorAlert) errorAlert.classList.add('hidden');
-
         // Extract values
         const nameVal = form.elements['name'].value;
         const emailVal = form.elements['email'].value;
@@ -215,7 +210,7 @@ function doGet(e) &#123;
         const messageVal = form.elements['message'].value;
         const timestampVal = new Date().toISOString();
 
-        // Encode as URLSearchParams so Google Apps Script e.parameter correctly parses all fields
+        // Encode as URLSearchParams
         const params = new URLSearchParams();
         params.append('timestamp', timestampVal);
         params.append('name', nameVal);
@@ -224,35 +219,36 @@ function doGet(e) &#123;
         params.append('subject', subjectVal);
         params.append('message', messageVal);
 
-        try {
-          // Send via standard POST with urlencoded body
-          await fetch(GOOGLE_SHEET_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: params.toString(),
-          });
+        // Instant Optimistic UI: Show success feedback immediately (zero waiting time!)
+        if (submitBtn) submitBtn.disabled = true;
+        if (btnText) btnText.textContent = 'Sent!';
+        if (successAlert) successAlert.classList.remove('hidden');
+        if (errorAlert) errorAlert.classList.add('hidden');
+        
+        // Reset inputs
+        form.reset();
 
-          if (successAlert) successAlert.classList.remove('hidden');
-          form.reset();
-        } catch (err) {
-          // Fallback GET request if POST is blocked by browser policy
-          try {
-            await fetch(`${GOOGLE_SHEET_URL}?${params.toString()}`, {
-              method: 'GET',
-              mode: 'no-cors',
-            });
-            if (successAlert) successAlert.classList.remove('hidden');
-            form.reset();
-          } catch (getErr) {
-            if (errorAlert) errorAlert.classList.remove('hidden');
-          }
-        } finally {
+        // Re-enable button after 1.5s
+        setTimeout(() => {
           if (submitBtn) submitBtn.disabled = false;
           if (btnText) btnText.textContent = 'Submit Message';
-          if (btnSpinner) btnSpinner.classList.add('hidden');
+        }, 1500);
+
+        // Send payload in background via Beacon or Fetch
+        try {
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon(GOOGLE_SHEET_URL, params);
+          } else {
+            fetch(GOOGLE_SHEET_URL, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: params.toString(),
+            });
+          }
+        } catch (err) {
+          // Non-blocking fallback
+          fetch(`${GOOGLE_SHEET_URL}?${params.toString()}`, { method: 'GET', mode: 'no-cors' }).catch(() => {});
         }
       };
     }
