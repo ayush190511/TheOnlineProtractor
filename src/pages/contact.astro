@@ -44,7 +44,7 @@ import { AdContainer } from '../components/AdContainer';
         </div>
       </div>
 
-      <form id="contact-form" class="space-y-4" method="POST">
+      <form id="contact-form" class="space-y-4" method="POST" novalidate>
         <!-- Name & Email Row -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -59,20 +59,25 @@ import { AdContainer } from '../components/AdContainer';
               placeholder="e.g. Alex Johnson"
               class="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-neutral-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder:text-neutral-400"
             />
+            <p id="name-error" class="hidden text-xs text-red-500 font-medium mt-1">Please enter your name.</p>
           </div>
 
           <div>
             <label for="email" class="block text-xs font-bold text-neutral-700 dark:text-neutral-300 uppercase tracking-wider mb-1.5">
               Email Address <span class="text-red-500">*</span>
             </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              placeholder="e.g. alex@example.com"
-              class="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-neutral-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder:text-neutral-400"
-            />
+            <div class="relative">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                placeholder="e.g. alex@example.com"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-neutral-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder:text-neutral-400"
+              />
+              <span id="email-valid-badge" class="hidden absolute right-3 top-2.5 text-emerald-500 text-sm font-bold">✓</span>
+            </div>
+            <p id="email-error" class="hidden text-xs text-red-500 font-medium mt-1">Please enter a valid email address (e.g. name@domain.com).</p>
           </div>
         </div>
 
@@ -122,6 +127,7 @@ import { AdContainer } from '../components/AdContainer';
             placeholder="Tell us what's on your mind..."
             class="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-neutral-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder:text-neutral-400 resize-y"
           ></textarea>
+          <p id="message-error" class="hidden text-xs text-red-500 font-medium mt-1">Please enter your message.</p>
         </div>
 
         <!-- Submit Button & Controls -->
@@ -150,24 +156,116 @@ import { AdContainer } from '../components/AdContainer';
 <script is:inline>
   const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzhqJOGOO71QBS_-5FjbmOFS9TsLo6qKJw2WVGqrp-dU5NEyDxj5LYBbXQ3cfTZZohU/exec';
 
+  function isValidEmail(email) {
+    // Robust RFC-compliant regex requiring @ and valid domain with TLD
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(String(email).trim());
+  }
+
   function initContactForm() {
     const form = document.getElementById('contact-form');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const messageInput = document.getElementById('message');
+    const emailError = document.getElementById('email-error');
+    const emailBadge = document.getElementById('email-valid-badge');
+    const nameError = document.getElementById('name-error');
+    const messageError = document.getElementById('message-error');
+
     const submitBtn = document.getElementById('submit-btn');
     const btnText = document.getElementById('btn-text');
     const btnSpinner = document.getElementById('btn-spinner');
     const successAlert = document.getElementById('status-success');
     const errorAlert = document.getElementById('status-error');
 
+    function checkEmailValidation() {
+      if (!emailInput) return false;
+      const val = emailInput.value.trim();
+      if (!val) {
+        emailInput.classList.remove('border-red-500', 'focus:ring-red-500', 'border-emerald-500');
+        if (emailError) emailError.classList.add('hidden');
+        if (emailBadge) emailBadge.classList.add('hidden');
+        return false;
+      }
+      
+      const valid = isValidEmail(val);
+      if (valid) {
+        emailInput.classList.remove('border-red-500', 'focus:ring-red-500');
+        emailInput.classList.add('border-emerald-500');
+        if (emailError) emailError.classList.add('hidden');
+        if (emailBadge) emailBadge.classList.remove('hidden');
+      } else {
+        emailInput.classList.add('border-red-500', 'focus:ring-red-500');
+        emailInput.classList.remove('border-emerald-500');
+        if (emailError) emailError.classList.remove('hidden');
+        if (emailBadge) emailBadge.classList.add('hidden');
+      }
+      return valid;
+    }
+
+    if (emailInput) {
+      emailInput.addEventListener('input', checkEmailValidation);
+      emailInput.addEventListener('blur', checkEmailValidation);
+    }
+
+    if (nameInput) {
+      nameInput.addEventListener('input', () => {
+        if (nameInput.value.trim()) {
+          nameInput.classList.remove('border-red-500');
+          if (nameError) nameError.classList.add('hidden');
+        }
+      });
+    }
+
+    if (messageInput) {
+      messageInput.addEventListener('input', () => {
+        if (messageInput.value.trim()) {
+          messageInput.classList.remove('border-red-500');
+          if (messageError) messageError.classList.add('hidden');
+        }
+      });
+    }
+
     if (form) {
       form.onsubmit = function(e) {
         e.preventDefault();
         
-        // Extract values
-        const nameVal = form.elements['name'].value;
-        const emailVal = form.elements['email'].value;
+        let hasError = false;
+
+        // 1. Validate Name
+        const nameVal = nameInput ? nameInput.value.trim() : '';
+        if (!nameVal) {
+          if (nameInput) nameInput.classList.add('border-red-500');
+          if (nameError) nameError.classList.remove('hidden');
+          hasError = true;
+        }
+
+        // 2. Validate Email
+        const emailVal = emailInput ? emailInput.value.trim() : '';
+        if (!isValidEmail(emailVal)) {
+          if (emailInput) {
+            emailInput.classList.add('border-red-500');
+            emailInput.focus();
+          }
+          if (emailError) emailError.classList.remove('hidden');
+          if (emailBadge) emailBadge.classList.add('hidden');
+          hasError = true;
+        }
+
+        // 3. Validate Message
+        const messageVal = messageInput ? messageInput.value.trim() : '';
+        if (!messageVal) {
+          if (messageInput) messageInput.classList.add('border-red-500');
+          if (messageError) messageError.classList.remove('hidden');
+          hasError = true;
+        }
+
+        if (hasError) {
+          return;
+        }
+
         const categoryVal = form.elements['category'].value;
         const subjectVal = form.elements['subject'].value;
-        const messageVal = form.elements['message'].value;
         const timestampVal = new Date().toISOString();
 
         // Encode as URLSearchParams
@@ -186,6 +284,7 @@ import { AdContainer } from '../components/AdContainer';
         if (errorAlert) errorAlert.classList.add('hidden');
         
         form.reset();
+        if (emailBadge) emailBadge.classList.add('hidden');
 
         setTimeout(() => {
           if (submitBtn) submitBtn.disabled = false;
