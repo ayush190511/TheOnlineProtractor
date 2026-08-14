@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
     --color-canvas: #ffffff;
@@ -24,6 +26,7 @@
   }
 
   html.dark {
+    color-scheme: dark;
     --color-canvas: #121212;
     --color-canvas-soft: #1a1a1a;
     --color-surface: #1e1e1e;
@@ -47,6 +50,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  html.dark body {
+    background-color: #121212 !important;
+    color: #f8fafc !important;
   }
 }
 
@@ -101,7 +109,7 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   color: inherit;
 }
 
-/* Dark Mode Overrides for Cards & Elements */
+/* Dark Mode Overrides */
 html.dark header,
 html.dark footer {
   background-color: rgba(24, 24, 27, 0.92) !important;
