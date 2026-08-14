@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { Point, AppToolMode } from '../utils/types';
-import { UploadCloud, Camera, RefreshCw, ZoomIn, ZoomOut, Maximize2, Trash2 } from 'lucide-react';
+import { UploadCloud, ZoomIn, ZoomOut, Maximize2, Trash2 } from 'lucide-react';
 
 interface ProtractorCanvasProps {
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
@@ -25,8 +25,6 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
   const [isDragOver, setIsDragOver] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1.0);
   const [panOffset, setPanOffset] = useState<Point>({ x: 0, y: 0 });
-  const [isPanning, setIsPanning] = useState(false);
-  const [panStart, setPanStart] = useState<Point>({ x: 0, y: 0 });
 
   // Handle global paste event (Ctrl+V / Cmd+V anywhere on page)
   useEffect(() => {
@@ -60,12 +58,13 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
           stream = s;
           if (videoRef.current) {
             videoRef.current.srcObject = s;
-            videoRef.current.play();
+            videoRef.current.play().catch(() => {});
           }
         })
         .catch((err) => {
-          console.error('Camera access failed:', err);
-          onCameraError?.('Unable to access webcam. Please check browser permissions.');
+          if (onCameraError) {
+            onCameraError('Camera access denied or unavailable on this device.');
+          }
         });
     }
 
@@ -76,24 +75,21 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
     };
   }, [isCameraActive]);
 
-  // Load image helper
   const loadImageFromFile = (file: File) => {
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const src = e.target?.result as string;
+    reader.onload = (event) => {
       const img = new Image();
       img.onload = () => {
         setLoadedImage(img);
         setZoomLevel(1.0);
         setPanOffset({ x: 0, y: 0 });
-        onImageLoaded?.(img);
+        if (onImageLoaded) onImageLoaded(img);
       };
-      img.src = src;
+      img.src = event.target?.result as string;
     };
     reader.readAsDataURL(file);
   };
 
-  // Drag and drop handlers
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
@@ -105,11 +101,10 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
     }
   };
 
-  // High-DPI canvas render loop
+  // Canvas Render Loop
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -118,6 +113,7 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
     const render = () => {
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
+      const isDark = document.documentElement.classList.contains('dark');
 
       // Resize backing store for crisp Retina rendering
       const displayWidth = Math.floor(rect.width);
@@ -133,9 +129,13 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
       ctx.clearRect(0, 0, displayWidth, displayHeight);
 
       // 1. Draw Background Grid
+      const bgColor = isDark ? '#141414' : '#ffffff';
+      const minorGridColor = isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.04)';
+      const majorGridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+
       if (showGrid) {
         ctx.save();
-        ctx.fillStyle = '#ffffff';
+        ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, displayWidth, displayHeight);
 
         // Major & Minor grid lines
@@ -143,7 +143,7 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
         ctx.lineWidth = 0.5;
 
         // Minor grid
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.04)';
+        ctx.strokeStyle = minorGridColor;
         ctx.beginPath();
         for (let x = 0; x <= displayWidth; x += gridSize) {
           ctx.moveTo(x, 0);
@@ -156,7 +156,7 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
         ctx.stroke();
 
         // Major grid every 100px
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.08)';
+        ctx.strokeStyle = majorGridColor;
         ctx.lineWidth = 1;
         ctx.beginPath();
         for (let x = 0; x <= displayWidth; x += gridSize * 5) {
@@ -170,7 +170,7 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
         ctx.stroke();
         ctx.restore();
       } else {
-        ctx.fillStyle = '#ffffff';
+        ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, displayWidth, displayHeight);
       }
 
@@ -187,7 +187,6 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
         ctx.translate(panOffset.x, panOffset.y);
         ctx.scale(zoomLevel, zoomLevel);
 
-        // Center image on canvas
         const imgAspect = loadedImage.width / loadedImage.height;
         const canvasAspect = displayWidth / displayHeight;
         let drawWidth = displayWidth;
@@ -225,8 +224,8 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-[520px] sm:h-[600px] border border-neutral-200/80 rounded-2xl overflow-hidden shadow-inner bg-white select-none transition-all ${
-        isDragOver ? 'ring-4 ring-blue-400 bg-blue-50/20' : ''
+      className={`relative w-full h-[480px] sm:h-[600px] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl overflow-hidden shadow-inner bg-white dark:bg-[#141414] select-none transition-all ${
+        isDragOver ? 'ring-4 ring-blue-400 bg-blue-50/20 dark:bg-blue-950/20' : ''
       }`}
       onDragOver={(e) => {
         e.preventDefault();
@@ -246,15 +245,15 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
 
       {/* Image Dropzone Overlay if in Image Mode and No Image Loaded */}
       {toolMode === 'image' && !loadedImage && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-white/85 backdrop-blur-xs text-center z-10 pointer-events-auto">
-          <div className="w-16 h-16 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-4 border border-blue-100 shadow-sm animate-bounce-subtle">
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-white/90 dark:bg-[#141414]/90 backdrop-blur-xs text-center z-10 pointer-events-auto">
+          <div className="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-sky-400 flex items-center justify-center mb-4 border border-blue-100 dark:border-blue-900 shadow-sm animate-bounce-subtle">
             <UploadCloud className="w-8 h-8" />
           </div>
-          <h3 className="text-xl font-bold text-neutral-900 mb-1">
+          <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-1">
             Measure Angle from Any Image or Photo
           </h3>
-          <p className="text-sm text-neutral-500 max-w-md mb-5">
-            Drag & drop a geometry homework sheet, screenshot, or blueprint here, or paste directly with <kbd className="px-1.5 py-0.5 bg-neutral-100 border border-neutral-300 rounded text-xs font-mono font-bold text-neutral-700">Ctrl + V</kbd>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-md mb-5">
+            Drag & drop a geometry homework sheet, screenshot, or blueprint here, or paste directly with <kbd className="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded text-xs font-mono font-bold text-neutral-700 dark:text-neutral-300">Ctrl + V</kbd>
           </p>
 
           <label className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-sm font-semibold cursor-pointer shadow-md transition-all">
@@ -271,7 +270,7 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
               }}
             />
           </label>
-          <span className="text-[11px] text-neutral-400 mt-3">
+          <span className="text-[11px] text-neutral-400 dark:text-neutral-500 mt-3">
             🔒 100% Private — Processed strictly on your device, never uploaded to any server.
           </span>
         </div>
@@ -279,12 +278,12 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
 
       {/* Floating Canvas Controls (When Image is Loaded) */}
       {loadedImage && (
-        <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-white/90 backdrop-blur-sm border border-neutral-200/80 rounded-lg p-1 shadow-sm z-30">
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-white/90 dark:bg-[#1e1e1e]/90 backdrop-blur-sm border border-neutral-200/80 dark:border-neutral-700 rounded-lg p-1 shadow-sm z-30">
           <button
             type="button"
             onClick={() => setZoomLevel((z) => Math.min(3.0, z + 0.2))}
             title="Zoom In"
-            className="p-1.5 hover:bg-neutral-100 rounded text-neutral-700"
+            className="p-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded text-neutral-700 dark:text-neutral-200 cursor-pointer"
           >
             <ZoomIn className="w-4 h-4" />
           </button>
@@ -292,7 +291,7 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
             type="button"
             onClick={() => setZoomLevel((z) => Math.max(0.4, z - 0.2))}
             title="Zoom Out"
-            className="p-1.5 hover:bg-neutral-100 rounded text-neutral-700"
+            className="p-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded text-neutral-700 dark:text-neutral-200 cursor-pointer"
           >
             <ZoomOut className="w-4 h-4" />
           </button>
@@ -303,7 +302,7 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
               setPanOffset({ x: 0, y: 0 });
             }}
             title="Reset Zoom & Pan"
-            className="p-1.5 hover:bg-neutral-100 rounded text-neutral-700"
+            className="p-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded text-neutral-700 dark:text-neutral-200 cursor-pointer"
           >
             <Maximize2 className="w-4 h-4" />
           </button>
@@ -311,7 +310,7 @@ export const ProtractorCanvas: React.FC<ProtractorCanvasProps> = ({
             type="button"
             onClick={() => setLoadedImage(null)}
             title="Remove Image"
-            className="p-1.5 hover:bg-red-50 text-red-600 rounded"
+            className="p-1.5 hover:bg-red-50 dark:hover:bg-red-950/40 text-red-600 rounded cursor-pointer"
           >
             <Trash2 className="w-4 h-4" />
           </button>

@@ -1,0 +1,72 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { AdContainer } from '../components/AdContainer';
+---
+
+<Layout
+  title="Terms & Conditions — TheOnlineProtractor.com"
+  description="Terms and conditions of use for TheOnlineProtractor.com web application and educational geometry tools."
+  activePage="terms"
+>
+  <div class="max-w-4xl mx-auto py-4">
+    <!-- Header -->
+    <div class="border-b border-neutral-200/80 dark:border-neutral-800 pb-6 mb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 dark:bg-slate-900 border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 text-xs font-bold mb-3 shadow-2xs">
+        <span>📜 Legal Terms</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-black text-neutral-900 dark:text-white tracking-tight mb-2">
+        Terms & Conditions
+      </h1>
+      <p class="text-xs text-neutral-500 dark:text-neutral-400">
+        Last Updated: August 2026
+      </p>
+    </div>
+
+    <AdContainer slot="top-leaderboard" />
+
+    <!-- Content -->
+    <div class="space-y-6 my-8 text-neutral-700 dark:text-neutral-300 text-sm leading-relaxed">
+      <section class="bg-white dark:bg-[#1e1e1e] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-xs">
+        <h2 class="text-lg font-bold text-neutral-900 dark:text-white mb-2">1. Acceptance of Terms</h2>
+        <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          By accessing or using <strong>TheOnlineProtractor.com</strong> ("the Service"), you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use the website.
+        </p>
+      </section>
+
+      <section class="bg-white dark:bg-[#1e1e1e] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-xs">
+        <h2 class="text-lg font-bold text-neutral-900 dark:text-white mb-2">2. Permitted Educational & Commercial Use</h2>
+        <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed mb-2">
+          You are granted a free, non-exclusive, non-transferable license to use our digital protractor tools, printable templates, and educational resources for:
+        </p>
+        <ul class="list-disc list-inside space-y-1 text-xs text-neutral-600 dark:text-neutral-400">
+          <li>Personal education, self-study, and homework completion.</li>
+          <li>Classroom instruction by teachers, schools, and academic institutions.</li>
+          <li>Drafting, woodworking, DIY measurements, and architectural reference.</li>
+        </ul>
+      </section>
+
+      <section class="bg-white dark:bg-[#1e1e1e] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-xs">
+        <h2 class="text-lg font-bold text-neutral-900 dark:text-white mb-2">3. Printable Template Calibration Disclaimer</h2>
+        <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          Our printable protractor templates are rendered in exact 1:1 scale. However, physical print accuracy is dependent on individual printer settings. Users must verify printer scaling ("100%" or "Actual Size") using the included 50mm test ruler bar before using prints for mission-critical engineering or life-safety applications.
+        </p>
+      </section>
+
+      <section class="bg-white dark:bg-[#1e1e1e] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-xs">
+        <h2 class="text-lg font-bold text-neutral-900 dark:text-white mb-2">4. Disclaimer of Warranties</h2>
+        <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          The Service is provided on an "as is" and "as available" basis without warranties of any kind, whether express or implied.
+        </p>
+      </section>
+
+      <section class="bg-white dark:bg-[#1e1e1e] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-xs">
+        <h2 class="text-lg font-bold text-neutral-900 dark:text-white mb-2">5. Changes to Terms</h2>
+        <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          We reserve the right to revise these Terms at any time. Continued use of the website following revisions constitutes acceptance of the modified Terms.
+        </p>
+      </section>
+    </div>
+
+    <AdContainer slot="bottom-leaderboard" />
+  </div>
+</Layout>

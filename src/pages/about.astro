@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { AdContainer } from '../components/AdContainer';
+---
+
+<Layout
+  title="About Us — TheOnlineProtractor.com"
+  description="Learn about TheOnlineProtractor.com, our mission to build the fastest, kid-friendly, and most accurate digital geometry tools for classrooms and creators worldwide."
+  activePage="about"
+>
+  <div class="max-w-4xl mx-auto py-4">
+    <!-- Header -->
+    <div class="border-b border-neutral-200/80 dark:border-neutral-800 pb-6 mb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200/60 dark:border-blue-800 text-blue-700 dark:text-sky-300 text-xs font-bold mb-3 shadow-2xs">
+        <span>📖 Our Story & Philosophy</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-black text-neutral-900 dark:text-white tracking-tight mb-3">
+        About TheOnlineProtractor.com
+      </h1>
+      <p class="text-neutral-600 dark:text-neutral-400 text-base leading-relaxed">
+        Empowering students, math educators, architects, and makers with instant, high-precision geometry measurement right in their web browser.
+      </p>
+    </div>
+
+    <AdContainer slot="top-leaderboard" />
+
+    <!-- Core Content Cards -->
+    <div class="space-y-8 my-8 text-neutral-800 dark:text-neutral-200 text-sm sm:text-base leading-relaxed">
+      <!-- Mission -->
+      <section class="bg-white dark:bg-[#1e1e1e] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-xs">
+        <h2 class="text-xl font-bold text-neutral-900 dark:text-white mb-3 flex items-center gap-2">
+          <span>🎯 Our Mission</span>
+        </h2>
+        <p class="mb-3 text-neutral-600 dark:text-neutral-300">
+          Geometry should be tactile, intuitive, and accessible to everyone without needing to purchase expensive plastic instruments or install heavy software. <strong>TheOnlineProtractor.com</strong> was created to solve a simple yet widespread challenge: students struggling to read small, scratched plastic protractors, or needing to measure angles directly on digital worksheets, homework photos, and blueprints.
+        </p>
+        <p class="text-neutral-600 dark:text-neutral-300">
+          We built this platform using subpixel HTML5 Retina Canvas mathematics, high-contrast visual handles, and interactive feedback so that even a 4th-grade student can measure angles effortlessly within seconds.
+        </p>
+      </section>
+
+      <!-- Why Choose Our Tool Grid -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="bg-[#faf9f8] dark:bg-[#181818] border border-neutral-200/80 dark:border-neutral-800 rounded-xl p-5">
+          <div class="text-2xl mb-2">⚡</div>
+          <h3 class="font-bold text-neutral-900 dark:text-white text-base mb-1">0.1° High Precision Math</h3>
+          <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+            Vector-based trigonometric engines calculate exact inner angles, reflex angles, and radian measurements with instantaneous snapping.
+          </p>
+        </div>
+
+        <div class="bg-[#faf9f8] dark:bg-[#181818] border border-neutral-200/80 dark:border-neutral-800 rounded-xl p-5">
+          <div class="text-2xl mb-2">🔒</div>
+          <h3 class="font-bold text-neutral-900 dark:text-white text-base mb-1">100% Privacy by Design</h3>
+          <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+            All image uploads, clipboard screenshots, and live webcam streams are processed completely client-side in your browser. Zero images are ever uploaded to any server.
+          </p>
+        </div>
+
+        <div class="bg-[#faf9f8] dark:bg-[#181818] border border-neutral-200/80 dark:border-neutral-800 rounded-xl p-5">
+          <div class="text-2xl mb-2">🎓</div>
+          <h3 class="font-bold text-neutral-900 dark:text-white text-base mb-1">Classroom & Teacher Ready</h3>
+          <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+            Free for all public schools, homeschoolers, and universities. Includes downloadable 1:1 scale printable templates and step-by-step guides.
+          </p>
+        </div>
+
+        <div class="bg-[#faf9f8] dark:bg-[#181818] border border-neutral-200/80 dark:border-neutral-800 rounded-xl p-5">
+          <div class="text-2xl mb-2">📱</div>
+          <h3 class="font-bold text-neutral-900 dark:text-white text-base mb-1">Cross-Device & Mobile First</h3>
+          <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+            Engineered with unified PointerEvents and touch optimization for Chromebooks, iPads, smartphones, and desktop computers.
+          </p>
+        </div>
+      </section>
+
+      <!-- Educational Standards -->
+      <section class="bg-white dark:bg-[#1e1e1e] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-xs">
+        <h2 class="text-xl font-bold text-neutral-900 dark:text-white mb-3 flex items-center gap-2">
+          <span>📐 Aligned with Common Core & Math Standards</span>
+        </h2>
+        <p class="text-neutral-600 dark:text-neutral-300 leading-relaxed">
+          Our online protractor tools directly align with elementary and middle school mathematics standards (including <strong>CCSS.MATH.CONTENT.4.MD.C.5, 4.MD.C.6, and 4.MD.C.7</strong>), reinforcing concepts of angle measurement as fractions of a 360-degree circle, acute vs. obtuse classification, and angle addition properties.
+        </p>
+      </section>
+    </div>
+
+    <AdContainer slot="bottom-leaderboard" />
+  </div>
+</Layout>

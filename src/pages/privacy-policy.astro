@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { AdContainer } from '../components/AdContainer';
+---
+
+<Layout
+  title="Privacy Policy — TheOnlineProtractor.com"
+  description="Privacy policy for TheOnlineProtractor.com. 100% client-side image processing, zero personal data harvesting, and full COPPA / GDPR compliance."
+  activePage="privacy"
+>
+  <div class="max-w-4xl mx-auto py-4">
+    <!-- Header -->
+    <div class="border-b border-neutral-200/80 dark:border-neutral-800 pb-6 mb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-bold mb-3 shadow-2xs">
+        <span>🔒 Transparency & Privacy</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-black text-neutral-900 dark:text-white tracking-tight mb-2">
+        Privacy Policy
+      </h1>
+      <p class="text-xs text-neutral-500 dark:text-neutral-400">
+        Effective Date: January 1, 2026 • Last Updated: August 2026
+      </p>
+    </div>
+
+    <AdContainer slot="top-leaderboard" />
+
+    <!-- Privacy Policy Content -->
+    <div class="space-y-6 my-8 text-neutral-700 dark:text-neutral-300 text-sm leading-relaxed">
+      <section class="bg-white dark:bg-[#1e1e1e] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-xs">
+        <h2 class="text-lg font-bold text-neutral-900 dark:text-white mb-2">1. Overview & Core Privacy Guarantee</h2>
+        <p class="mb-3">
+          At <strong>TheOnlineProtractor.com</strong>, your privacy is our highest priority. We believe educational tools should protect user confidentiality. 
+        </p>
+        <div class="p-4 bg-emerald-50/50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 rounded-xl text-emerald-900 dark:text-emerald-300 text-xs">
+          <strong>Key Guarantee:</strong> All photos, math worksheets, blueprints, and live camera feeds loaded into our protractor tool are processed <strong>100% locally on your device</strong> using HTML5 Canvas. No image data is ever transmitted, uploaded, or stored on our servers.
+        </div>
+      </section>
+
+      <section class="bg-white dark:bg-[#1e1e1e] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-xs">
+        <h2 class="text-lg font-bold text-neutral-900 dark:text-white mb-2">2. Information We Collect</h2>
+        <p class="mb-3">We collect minimal information necessary to deliver and operate our website:</p>
+        <ul class="list-disc list-inside space-y-1.5 text-xs text-neutral-600 dark:text-neutral-400">
+          <li><strong>Local Browser Storage:</strong> We use your browser's <code class="px-1 bg-neutral-100 dark:bg-neutral-800 rounded">localStorage</code> to remember your theme preference (Light or Dark mode). This data remains exclusively on your device.</li>
+          <li><strong>Contact Form Data:</strong> If you voluntarily send a message through our Contact page, the details you submit (name, email, and message) are transmitted securely to respond to your inquiry.</li>
+          <li><strong>Anonymous Usage Telemetry:</strong> Standard non-personally identifiable server logs (IP address, browser type, referring page, time spent) to maintain uptime and prevent denial-of-service abuse.</li>
+        </ul>
+      </section>
+
+      <section class="bg-white dark:bg-[#1e1e1e] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-xs">
+        <h2 class="text-lg font-bold text-neutral-900 dark:text-white mb-2">3. Cookies and Advertising (Google AdSense)</h2>
+        <p class="mb-3 text-xs text-neutral-600 dark:text-neutral-400">
+          We may display advertisements provided by Google AdSense and other advertising networks to keep our geometry tools completely free for students and schools.
+        </p>
+        <ul class="list-disc list-inside space-y-1.5 text-xs text-neutral-600 dark:text-neutral-400">
+          <li>Third-party vendors, including Google, use cookies to serve ads based on prior visits to our website or other websites.</li>
+          <li>Google's use of advertising cookies enables it and its partners to serve ads based on your visit to our sites and/or other sites on the Internet.</li>
+          <li>You may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-sky-400 underline">Google Ads Settings</a> or through <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-sky-400 underline">aboutads.info</a>.</li>
+        </ul>
+      </section>
+
+      <section class="bg-white dark:bg-[#1e1e1e] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-xs">
+        <h2 class="text-lg font-bold text-neutral-900 dark:text-white mb-2">4. Children's Online Privacy Protection (COPPA)</h2>
+        <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          TheOnlineProtractor.com is safe for young learners and students under 13. We do not require accounts or user registration, nor do we harvest or request personally identifiable information from children.
+        </p>
+      </section>
+
+      <section class="bg-white dark:bg-[#1e1e1e] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-xs">
+        <h2 class="text-lg font-bold text-neutral-900 dark:text-white mb-2">5. Contact Information</h2>
+        <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          For any privacy questions or requests regarding data policies, please visit our <a href="/contact" class="text-blue-600 dark:text-sky-400 font-semibold underline">Contact Page</a>.
+        </p>
+      </section>
+    </div>
+
+    <AdContainer slot="bottom-leaderboard" />
+  </div>
+</Layout>

@@ -59,17 +59,17 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onToggleCamera,
 }) => {
   return (
-    <div className="w-full bg-[#fcfbf9] border border-neutral-200/80 rounded-xl p-3 shadow-xs select-none flex flex-col gap-3">
+    <div className="w-full bg-[#fcfbf9] dark:bg-[#181818] border border-neutral-200/80 dark:border-neutral-800 rounded-xl p-3 shadow-xs select-none flex flex-col gap-3">
       {/* Top Row: Primary Mode Switcher */}
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-1 bg-white p-1 rounded-lg border border-neutral-200/70 shadow-xs flex-wrap">
+        <div className="flex items-center gap-1 bg-white dark:bg-[#202020] p-1 rounded-lg border border-neutral-200/70 dark:border-neutral-700 shadow-xs flex-wrap">
           <button
             type="button"
             onClick={() => onToolModeChange('standard')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
               toolMode === 'standard'
                 ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-neutral-700 hover:bg-neutral-100'
+                : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700'
             }`}
           >
             <Compass className="w-4 h-4" />
@@ -79,10 +79,10 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           <button
             type="button"
             onClick={() => onToolModeChange('image')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
               toolMode === 'image'
                 ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-neutral-700 hover:bg-neutral-100'
+                : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700'
             }`}
           >
             <ImageIcon className="w-4 h-4" />
@@ -95,39 +95,26 @@ export const Toolbar: React.FC<ToolbarProps> = ({
               onToolModeChange('camera');
               if (!isCameraActive) onToggleCamera();
             }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
               toolMode === 'camera'
                 ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-neutral-700 hover:bg-neutral-100'
+                : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700'
             }`}
           >
             <Camera className="w-4 h-4" />
             <span>Live Camera</span>
           </button>
-
-          <button
-            type="button"
-            onClick={() => onToolModeChange('print')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-              toolMode === 'print'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-neutral-700 hover:bg-neutral-100'
-            }`}
-          >
-            <Printer className="w-4 h-4" />
-            <span>Printable</span>
-          </button>
         </div>
 
-        {/* 180° vs 360° Dial Switcher */}
-        <div className="flex items-center gap-1 bg-white p-1 rounded-lg border border-neutral-200/70 shadow-xs">
+        {/* 180° vs 360° Switcher */}
+        <div className="flex items-center gap-1 bg-white dark:bg-[#202020] p-1 rounded-lg border border-neutral-200/70 dark:border-neutral-700 shadow-xs">
           <button
             type="button"
             onClick={() => onProtractorModeChange('180')}
-            className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all ${
+            className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all cursor-pointer ${
               protractorMode === '180'
-                ? 'bg-neutral-900 text-white'
-                : 'text-neutral-600 hover:bg-neutral-100'
+                ? 'bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 shadow-xs'
+                : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700'
             }`}
           >
             180° Half
@@ -135,10 +122,10 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           <button
             type="button"
             onClick={() => onProtractorModeChange('360')}
-            className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all ${
+            className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all cursor-pointer ${
               protractorMode === '360'
-                ? 'bg-neutral-900 text-white'
-                : 'text-neutral-600 hover:bg-neutral-100'
+                ? 'bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 shadow-xs'
+                : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700'
             }`}
           >
             360° Full
@@ -146,134 +133,142 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         </div>
       </div>
 
-      {/* Middle Row: Fine-Tune Nudge Buttons & Angle Snapping */}
-      <div className="flex items-center justify-between flex-wrap gap-2 pt-2 border-t border-neutral-200/50">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-xs font-bold text-neutral-500 mr-1">Nudge:</span>
-          <button
-            type="button"
-            onClick={() => onNudgeAngle(-1)}
-            title="Decrease by 1 degree"
-            className="px-2 py-1 bg-white hover:bg-neutral-100 border border-neutral-200/80 rounded-md text-xs font-semibold text-neutral-800 shadow-2xs transition-colors"
-          >
-            -1.0°
-          </button>
-          <button
-            type="button"
-            onClick={() => onNudgeAngle(-0.1)}
-            title="Decrease by 0.1 degree"
-            className="px-2 py-1 bg-white hover:bg-neutral-100 border border-neutral-200/80 rounded-md text-xs font-semibold text-neutral-800 shadow-2xs transition-colors"
-          >
-            -0.1°
-          </button>
-          <button
-            type="button"
-            onClick={() => onNudgeAngle(0.1)}
-            title="Increase by 0.1 degree"
-            className="px-2 py-1 bg-white hover:bg-neutral-100 border border-neutral-200/80 rounded-md text-xs font-semibold text-neutral-800 shadow-2xs transition-colors"
-          >
-            +0.1°
-          </button>
-          <button
-            type="button"
-            onClick={() => onNudgeAngle(1)}
-            title="Increase by 1 degree"
-            className="px-2 py-1 bg-white hover:bg-neutral-100 border border-neutral-200/80 rounded-md text-xs font-semibold text-neutral-800 shadow-2xs transition-colors"
-          >
-            +1.0°
-          </button>
-
-          {/* Snap Angle Button */}
+      {/* Second Row: Precision Controls & Toggles */}
+      <div className="flex items-center justify-between flex-wrap gap-2 pt-2 border-t border-neutral-200/60 dark:border-neutral-800 text-xs">
+        {/* Left Side: Snapping, Grid, Loupe, Opacity */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Snap Button */}
           <button
             type="button"
             onClick={onSnapToggle}
-            className={`flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-md border transition-all ${
+            title="Snap to common angles (30°, 45°, 90°, etc.)"
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer ${
               snapEnabled
-                ? 'bg-amber-100 text-amber-900 border-amber-300'
-                : 'bg-white text-neutral-600 border-neutral-200/80 hover:bg-neutral-100'
+                ? 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-300 font-bold'
+                : 'bg-white dark:bg-[#202020] border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Snap Angles (45°, 90°)</span>
+            <span>Snap Angles</span>
           </button>
-        </div>
 
-        {/* Action buttons: Reset, Flip, Export */}
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={onFlipProtractor}
-            title="Flip Protractor Baseline"
-            className="p-1.5 bg-white hover:bg-neutral-100 border border-neutral-200/80 rounded-md text-neutral-700 shadow-2xs transition-colors"
-          >
-            <FlipHorizontal className="w-4 h-4" />
-          </button>
-          <button
-            type="button"
-            onClick={onResetPins}
-            title="Reset Handle Pins to 45°"
-            className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-neutral-100 border border-neutral-200/80 rounded-md text-xs font-medium text-neutral-700 shadow-2xs transition-colors"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>Reset</span>
-          </button>
-          <button
-            type="button"
-            onClick={onExportImage}
-            className="flex items-center gap-1.5 px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-xs font-bold shadow-xs transition-colors"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Save Image (PNG)</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Bottom Row: Sliders & View Toggles */}
-      <div className="flex items-center justify-between flex-wrap gap-4 pt-2 border-t border-neutral-200/50 text-xs text-neutral-600">
-        {/* Opacity Slider */}
-        <div className="flex items-center gap-2">
-          <Eye className="w-3.5 h-3.5 text-neutral-400" />
-          <span className="font-semibold">Protractor Opacity:</span>
-          <input
-            type="range"
-            min="0.1"
-            max="1.0"
-            step="0.05"
-            value={opacity}
-            onChange={(e) => onOpacityChange(parseFloat(e.target.value))}
-            className="w-24 accent-blue-600 cursor-pointer"
-          />
-          <span className="font-mono text-[11px] text-neutral-500 w-8">
-            {Math.round(opacity * 100)}%
-          </span>
-        </div>
-
-        {/* View toggles */}
-        <div className="flex items-center gap-2">
+          {/* Grid Toggle */}
           <button
             type="button"
             onClick={onGridToggle}
-            className={`flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium border ${
+            title="Toggle background grid"
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer ${
               showGrid
-                ? 'bg-neutral-200 text-neutral-900 border-neutral-300'
-                : 'bg-white text-neutral-500 border-neutral-200/60'
+                ? 'bg-blue-50 dark:bg-blue-950/40 border-blue-300 dark:border-blue-700 text-blue-900 dark:text-sky-300 font-bold'
+                : 'bg-white dark:bg-[#202020] border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50'
             }`}
           >
-            <Grid className="w-3 h-3" />
+            <Grid className="w-3.5 h-3.5" />
             <span>Grid</span>
           </button>
 
+          {/* Loupe Toggle */}
           <button
             type="button"
             onClick={onMagnifierToggle}
-            className={`flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium border ${
+            title="Toggle 2.5x magnifying loupe while dragging"
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer ${
               showMagnifier
-                ? 'bg-neutral-200 text-neutral-900 border-neutral-300'
-                : 'bg-white text-neutral-500 border-neutral-200/60'
+                ? 'bg-purple-50 dark:bg-purple-950/40 border-purple-300 dark:border-purple-700 text-purple-900 dark:text-purple-300 font-bold'
+                : 'bg-white dark:bg-[#202020] border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50'
             }`}
           >
-            <Search className="w-3 h-3" />
-            <span>Loupe (2.5x)</span>
+            <Search className="w-3.5 h-3.5" />
+            <span>2.5x Loupe</span>
+          </button>
+
+          {/* Opacity Slider */}
+          <div className="flex items-center gap-2 bg-white dark:bg-[#202020] px-3 py-1 rounded-lg border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300">
+            <Eye className="w-3.5 h-3.5 text-neutral-400" />
+            <span className="text-[11px] font-medium">Opacity</span>
+            <input
+              type="range"
+              min="0.1"
+              max="1.0"
+              step="0.05"
+              value={opacity}
+              onChange={(e) => onOpacityChange(parseFloat(e.target.value))}
+              className="w-16 sm:w-20 h-1.5 bg-neutral-200 dark:bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+            />
+            <span className="text-[11px] font-mono w-7 text-right">{Math.round(opacity * 100)}%</span>
+          </div>
+        </div>
+
+        {/* Right Side: Angle Nudges & Export */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {/* Nudge Buttons */}
+          <div className="flex items-center bg-white dark:bg-[#202020] border border-neutral-200 dark:border-neutral-700 rounded-lg overflow-hidden">
+            <button
+              type="button"
+              onClick={() => onNudgeAngle(-1.0)}
+              title="Nudge angle -1.0°"
+              className="px-2 py-1 text-xs font-bold hover:bg-neutral-100 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer"
+            >
+              -1°
+            </button>
+            <span className="w-px h-3 bg-neutral-200 dark:bg-neutral-700"></span>
+            <button
+              type="button"
+              onClick={() => onNudgeAngle(-0.1)}
+              title="Nudge angle -0.1°"
+              className="px-2 py-1 text-[11px] font-semibold hover:bg-neutral-100 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer"
+            >
+              -0.1°
+            </button>
+            <span className="w-px h-3 bg-neutral-200 dark:bg-neutral-700"></span>
+            <button
+              type="button"
+              onClick={() => onNudgeAngle(0.1)}
+              title="Nudge angle +0.1°"
+              className="px-2 py-1 text-[11px] font-semibold hover:bg-neutral-100 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer"
+            >
+              +0.1°
+            </button>
+            <span className="w-px h-3 bg-neutral-200 dark:bg-neutral-700"></span>
+            <button
+              type="button"
+              onClick={() => onNudgeAngle(1.0)}
+              title="Nudge angle +1.0°"
+              className="px-2 py-1 text-xs font-bold hover:bg-neutral-100 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer"
+            >
+              +1°
+            </button>
+          </div>
+
+          {/* Flip Protractor */}
+          <button
+            type="button"
+            onClick={onFlipProtractor}
+            title="Flip Protractor Orientation"
+            className="p-1.5 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-[#202020] text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
+          >
+            <FlipHorizontal className="w-4 h-4" />
+          </button>
+
+          {/* Reset */}
+          <button
+            type="button"
+            onClick={onResetPins}
+            title="Reset Protractor and Pins to Default"
+            className="p-1.5 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-[#202020] text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+
+          {/* Export PNG */}
+          <button
+            type="button"
+            onClick={onExportImage}
+            title="Save annotated high-resolution PNG image"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Save PNG</span>
           </button>
         </div>
       </div>

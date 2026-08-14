@@ -6,160 +6,100 @@ import Footer from '../components/Footer.astro';
 interface Props {
   title?: string;
   description?: string;
-  activePage?: 'home' | 'image' | '360' | 'printable';
-  schemaType?: 'main' | 'image' | '360' | 'printable';
+  activePage?: 'home' | 'image' | '360' | 'printable' | 'about' | 'privacy' | 'terms' | 'contact';
 }
 
 const {
-  title = 'TheOnlineProtractor.com — Free Online Protractor & Digital Angle Finder',
-  description = 'TheOnlineProtractor.com is a free, high-precision digital protractor tool to measure angles online, upload homework worksheets, photo diagrams, and download free printable protractors.',
+  title = 'TheOnlineProtractor.com — Free Online Protractor & Angle Finder',
+  description = 'TheOnlineProtractor.com is the #1 free online protractor tool. Measure angles online with 180° and 360° digital protractors, upload worksheets or photos, and download printable protractor templates.',
   activePage = 'home',
 } = Astro.props;
 
 const siteUrl = 'https://theonlineprotractor.com';
-const canonicalURL = new URL(Astro.url.pathname, siteUrl);
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
 
-// Structured Data (JSON-LD)
-const webAppSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "TheOnlineProtractor.com",
-  "url": canonicalURL.href,
-  "description": description,
-  "applicationCategory": "EducationalApplication",
-  "operatingSystem": "All modern browsers (Chrome, Safari, Firefox, Edge, iOS, Android)",
-  "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'TheOnlineProtractor.com',
+  url: siteUrl,
+  applicationCategory: 'EducationalApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires HTML5 Canvas support',
+  description: description,
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
   },
-  "keywords": "protractor, how to use a protractor, online protractor, printable protractor, what is a protractor, digital protractor, protractor printable, protractor tool, protractor and compass, measuring angles with a protractor worksheet, online protractor tool, online protractor practice",
-  "featureList": [
-    "180° and 360° virtual digital protractor tool",
-    "Measure angles from photos and worksheet screenshots",
-    "Live webcam digital angle finder",
-    "2.5x high-precision magnifying loupe with crosshairs",
-    "Automatic angle classification (Acute, Right, Obtuse, Straight, Reflex)",
-    "Actual size printable protractor (1:1 scale PDF / SVG)"
-  ]
-};
-
-const howToSchema = {
-  "@context": "https://schema.org",
-  "@type": "HowTo",
-  "name": "How to Use a Protractor to Measure Angles Online",
-  "description": "A complete step-by-step guide on how to read a protractor and measure angles accurately using TheOnlineProtractor.com.",
-  "step": [
-    {
-      "@type": "HowToStep",
-      "position": 1,
-      "name": "Position the Vertex Pin",
-      "text": "Drag the Orange vertex handle (V) directly over the vertex (the point where the two rays or lines intersect). Use the 2.5x magnifying loupe for pinpoint precision."
-    },
-    {
-      "@type": "HowToStep",
-      "position": 2,
-      "name": "Align the Base Ray",
-      "text": "Drag the Blue arm handle (A) along the bottom baseline ray of the angle to set your 0° reference line."
-    },
-    {
-      "@type": "HowToStep",
-      "position": 3,
-      "name": "Point Along the Second Ray",
-      "text": "Drag the Emerald Green arm handle (B) along the second ray. The digital readout immediately displays the exact degree measurement, angle classification, supplementary angle, and radians."
-    }
-  ]
-};
-
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "What is a protractor?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "A protractor is a handheld or digital geometric measuring instrument used to measure, calculate, and draw angles in units of degrees (°) and radians. Standard protractors are semi-circular (180°) or circular (360°)."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How to use a protractor to measure angles?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "To use a protractor, align the center hole or vertex mark with the angle's corner (vertex), line up the baseline with one ray at 0°, and read the degree mark where the second ray intersects the curved circular scale."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How to measure angles without a protractor?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "You can measure angles without a physical protractor by uploading a photo of your angle directly to TheOnlineProtractor.com, by using paper-folding right angle corners (90°, 45°), or by using trigonometric tangent formulas (tan(θ) = opposite / adjacent)."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How to read a protractor with double scales (inner vs outer)?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "If the angle opens to the left (counter-clockwise), read the outer scale starting at 0° on the right. If the angle opens to the right (clockwise), read the inner scale starting at 0° on the left."
-      }
-    }
-  ]
+  featureList: [
+    'Online 180 and 360 degree protractor dials',
+    'Interactive draggable vertices with 2.5x magnifier loupe',
+    'Clipboard paste support for measuring angles from worksheets and photos',
+    'High-resolution annotated image export',
+    '1:1 scale actual size printable protractor PDF templates',
+  ],
 };
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href={canonicalURL.href} />
+    <link rel="canonical" href={canonicalUrl} />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Primary Meta Tags -->
+    <!-- Anti-FOUC Theme Script -->
+    <script is:inline>
+      (function() {
+        const storedTheme = localStorage.getItem('theme');
+        if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
+
+    <!-- SEO Meta Tags -->
     <title>{title}</title>
-    <meta name="title" content={title} />
     <meta name="description" content={description} />
-    <meta name="keywords" content="protractor, how to use a protractor, online protractor, printable protractor, what is a protractor, digital protractor, protractor printable, protractor tool, protractor and compass, measuring angles with a protractor worksheet, online protractor tool, online protractor practice" />
+    <meta name="keywords" content="protractor, how to use a protractor, online protractor, printable protractor, what is a protractor, digital protractor, protractor printable, protractor tool, protractor and compass, measuring angles with a protractor worksheet, online protractor tool, online protractor practice, how to read a protractor" />
     <meta name="author" content="TheOnlineProtractor.com" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="robots" content="index, follow" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonicalURL.href} />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}/logo.svg`} />
     <meta property="og:site_name" content="TheOnlineProtractor.com" />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={canonicalURL.href} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}/logo.svg`} />
 
-    <!-- Google Fonts: Inter -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
 
-    <!-- Structured Data JSON-LD -->
-    <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} />
-    <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
-    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   </head>
-  <body class="min-h-screen flex flex-col bg-white text-neutral-900 selection:bg-blue-100">
+  <body class="min-h-screen flex flex-col bg-[#ffffff] dark:bg-[#121212] text-neutral-900 dark:text-[#f8fafc] antialiased transition-colors duration-200">
     <Header activePage={activePage} />
-    <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 pt-6">
+    
+    <main class="flex-1 w-full max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
       <slot />
     </main>
+
     <Footer />
   </body>
 </html>
